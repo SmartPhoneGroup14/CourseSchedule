@@ -202,14 +202,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         AsyncTask<String, Void, String> task = new AsyncTask<String, Void, String>() {
             boolean success;
             String moodlePageContent;
+            String error = "Fail to login";
 
             @Override
             protected String doInBackground(String... arg0) {
                 success = true;
                 moodlePageContent = ConnectUtil.getMoodleFirstPage(userName, userPW);
 
-                if (moodlePageContent.equals("Invalid PortalID or Password"))
+
+                if (moodlePageContent.equals("Invalid")) {
                     success = false;
+                    error = "Invalid PortalID or Password";
+
+                } else if (moodlePageContent.equals("Fail to login")) {
+                    success = false;
+                    error = "Fail to login";
+                }
+
 
                 return null;
             }
@@ -220,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     //解析页面
                     parse_HTML_Source_and_Switch_Activity(moodlePageContent);
                 } else {
-                    alert("Error", "Fail to login");
+                    alert("Error", error);
                 }
                 pdialog.hide();
             }

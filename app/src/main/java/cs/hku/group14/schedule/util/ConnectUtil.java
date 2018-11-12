@@ -12,6 +12,8 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class ConnectUtil {
 
+    private static final String TAG = "ConnectUtil";
+
     public static String ReadBufferedHTML(BufferedReader reader, char[] htmlBuffer, int bufSz) throws java.io.IOException {
         htmlBuffer[0] = '\0';
         int offset = 0;
@@ -43,18 +45,18 @@ public class ConnectUtil {
             String url_tmp = "https://hkuportal.hku.hk/cas/login?service=http://moodle.hku.hk/login/index.php?authCAS=CAS&username="
                     + userName + "&password=" + userPW;
 
-
-            Log.i("Test", url_tmp);
-
             URL url_portal = new URL(url_tmp);
             conn_portal = (HttpsURLConnection) url_portal.openConnection();
 
             BufferedReader reader_portal = new BufferedReader(new InputStreamReader(conn_portal.getInputStream()));
             String HTMLSource = ReadBufferedHTML(reader_portal, htmlBuffer, HTML_BUFFER_SIZE);
             int ticketIDStartPosition = HTMLSource.indexOf("ticket=") + 7;
+            if (ticketIDStartPosition == 6){
+                return "Invalid";
+            }
             String ticketID = HTMLSource.substring(ticketIDStartPosition, HTMLSource.indexOf("\";", ticketIDStartPosition));
 
-            Log.i("Test ticketId", ticketID);
+            Log.i(TAG, "TicketId : " + ticketID);
 
             reader_portal.close();
             /////////////////////////////////// HKU portal //////////////////////////////////////
@@ -103,9 +105,9 @@ public class ConnectUtil {
             /////////////////////////////////// Moodle //////////////////////////////////////
 
         } catch (Exception e) {
-            Log.e("Exception", e.toString());
+            Log.e(TAG, e.toString());
 
-            Log.e("Exception", e.getMessage());
+            e.printStackTrace();
 
             return "Fail to login";
         } finally {
