@@ -10,7 +10,7 @@
         android:allowBackup="true"
         android:icon="@drawable/msc_cs_logo_dark_bg"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/msc_cs_logo_dark_bg"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
@@ -21,7 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CourseListActivity"></activity>
+        <activity android:name=".view.CourseListActivity"></activity>
+        <activity android:name=".view.BaseFuncActivity"></activity>
+
     </application>
 
 </manifest>

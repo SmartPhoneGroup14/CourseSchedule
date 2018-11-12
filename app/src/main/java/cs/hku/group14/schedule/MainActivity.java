@@ -1,25 +1,18 @@
 package cs.hku.group14.schedule;
 
-
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.CookieHandler;
 import java.net.CookieManager;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,7 +22,19 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-public class MainActivity extends Activity implements View.OnClickListener {
+import cs.hku.group14.schedule.util.ConnectUtil;
+import cs.hku.group14.schedule.view.BaseFuncActivity;
+import cs.hku.group14.schedule.view.CourseListActivity;
+
+/*
+Smart Phone 目标：
+1、预设数据库数据：课程编号-课程时间，线程后台查询
+2、HKU Portal账号登陆，参考WorkShop1，解析 moodle页面
+3、匹配课程编号，展示课程时间为课程表，使用Git 控件
+4、提前一段时间，进行消息提示，可以添加Email 提示。
+ */
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText txt_UserName, txt_UserPW;
     private Button btn_Login;
@@ -38,45 +43,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        initView();
+        doTrustToCertificates();
+        CookieHandler.setDefault(new CookieManager());
+    }
+
+    private void initView() {
         btn_Login = (Button) findViewById(R.id.btn_Login);
         txt_UserName = (EditText) findViewById(R.id.txt_UserName);
         txt_UserPW = (EditText) findViewById(R.id.txt_UserPW);
         // Register the Login button to click listener
         // Whenever the button is clicked, onClick is called
         btn_Login.setOnClickListener(this);
-
-        doTrustToCertificates();
-        CookieHandler.setDefault(new CookieManager());
     }
-
-
-//    @Override
-//    public void onClick(View v) {
-//        // btn_Login is the ID of Login button defined in the layout
-//        if (v.getId() == R.id.btn_Login) {
-//            String uname = txt_UserName.getText().toString();
-//            String upassword = txt_UserPW.getText().toString();
-//            System.out.println("@@@@@@@@@@@@@@@\n" + "The Portal ID is: " + uname + "\n" +
-//                    "The Password is: " + upassword + "\n" + "@@@@@@@@@@@@@@@");
-//        }
-//
-//        Intent intent = new Intent(getBaseContext(), CourseListActivity.class);
-//        ArrayList<String> cname = new ArrayList<String>();
-//        ArrayList<String> cteachers = new ArrayList<String>();
-//        //*************Sample Data*************//
-//        cname.add("c1");
-//        cteachers.add("t1");
-//        cname.add("c2");
-//        cteachers.add("t2");
-//        cname.add("c3");
-//        cteachers.add("t3");
-//        cname.add("c4");
-//        cteachers.add("t4");
-//        //*************Sample Data*************//
-//        intent.putStringArrayListExtra("CourseName", cname);
-//        intent.putStringArrayListExtra("Teachers", cteachers);
-//        startActivity(intent);
-//    }
 
     @Override
     public void onClick(View v) {
@@ -84,122 +64,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
             String uname = txt_UserName.getText().toString();
             String upassword = txt_UserPW.getText().toString();
 
+            //登陆portal, 获取课程
             connect(uname, upassword);
         }
     }
 
-    public String ReadBufferedHTML(BufferedReader reader, char[] htmlBuffer, int bufSz) throws java.io.IOException {
-        htmlBuffer[0] = '\0';
-        int offset = 0;
-        do {
-            int cnt = reader.read(htmlBuffer, offset, bufSz - offset);
-            if (cnt > 0) {
-                offset += cnt;
-            } else {
-                break;
-            }
-        } while (true);
-        return new String(htmlBuffer);
-    }
-
-    public String getMoodleFirstPage(String userName, String userPW) {
-        HttpsURLConnection conn_portal = null;
-        URLConnection conn_moodle = null;
-
-        final int HTML_BUFFER_SIZE = 2 * 1024 * 1024;
-        char htmlBuffer[] = new char[HTML_BUFFER_SIZE];
-
-        final int HTTPCONNECTION_TYPE = 0;
-        final int HTTPSCONNECTION_TYPE = 1;
-        int moodle_conn_type = HTTPCONNECTION_TYPE;
-
-        try {
-            /////////////////////////////////// HKU portal //////////////////////////////////////
-
-            String url_tmp = "https://hkuportal.hku.hk/cas/login?service=http://moodle.hku.hk/login/index.php?authCAS=CAS&username="
-                    + userName + "&password=" + userPW;
-
-
-            Log.i("Test", url_tmp);
-
-            URL url_portal = new URL(url_tmp);
-            conn_portal = (HttpsURLConnection) url_portal.openConnection();
-
-            BufferedReader reader_portal = new BufferedReader(new InputStreamReader(conn_portal.getInputStream()));
-            String HTMLSource = ReadBufferedHTML(reader_portal, htmlBuffer, HTML_BUFFER_SIZE);
-            int ticketIDStartPosition = HTMLSource.indexOf("ticket=") + 7;
-            String ticketID = HTMLSource.substring(ticketIDStartPosition, HTMLSource.indexOf("\";", ticketIDStartPosition));
-
-            Log.i("Test ticketId", ticketID);
-
-            reader_portal.close();
-            /////////////////////////////////// HKU portal //////////////////////////////////////
-
-            /////////////////////////////////// Moodle //////////////////////////////////////
-            URL url_moodle = new URL("http://moodle.hku.hk/login/index.php?authCAS=CAS&ticket=" + ticketID);
-            conn_moodle = url_moodle.openConnection();
-            ((HttpURLConnection) conn_moodle).setInstanceFollowRedirects(true);
-
-            BufferedReader reader_moodle = new BufferedReader(new InputStreamReader(conn_moodle.getInputStream()));
-
-            /// handling redirects to HTTPS protocol
-            while (true) {
-                String redirect_moodle = conn_moodle.getHeaderField("Location");
-                if (redirect_moodle != null) {
-                    URL new_url_moodle = new URL(url_moodle, redirect_moodle);
-                    if (moodle_conn_type == HTTPCONNECTION_TYPE) {
-                        ((HttpURLConnection) conn_moodle).disconnect();
-                    } else {
-                        ((HttpsURLConnection) conn_moodle).disconnect();
-                    }
-                    conn_moodle = new_url_moodle.openConnection();
-                    if (new_url_moodle.getProtocol().equals("http")) {
-                        moodle_conn_type = HTTPCONNECTION_TYPE;
-                        ((HttpURLConnection) conn_moodle).setInstanceFollowRedirects(true);
-                    } else {
-                        moodle_conn_type = HTTPSCONNECTION_TYPE;
-                        ((HttpsURLConnection) conn_moodle).setInstanceFollowRedirects(true);
-                    }
-
-                    url_moodle = new_url_moodle;
-
-                    //String cookie = conn_moodle.getHeaderField("Set-Cookie");
-                    //if (cookie != null) {
-                    //    conn_moodle2.setRequestProperty("Cookie", cookie);
-                    //}
-                    reader_moodle = new BufferedReader(new InputStreamReader(conn_moodle.getInputStream()));
-                } else {
-                    break;
-                }
-            }
-
-            HTMLSource = ReadBufferedHTML(reader_moodle, htmlBuffer, HTML_BUFFER_SIZE);
-            reader_moodle.close();
-            return HTMLSource;
-            /////////////////////////////////// Moodle //////////////////////////////////////
-
-        } catch (Exception e) {
-            Log.e("Exception", e.toString());
-
-            Log.e("Exception", e.getMessage());
-
-            return "Fail to login";
-        } finally {
-            // When HttpClient instance is no longer needed,
-            // shut down the connection manager to ensure
-            // immediate deallocation of all system resources
-            if (conn_portal != null) {
-                conn_portal.disconnect();
-            }
-            if (conn_moodle != null) {
-                if (moodle_conn_type == HTTPCONNECTION_TYPE) {
-                    ((HttpURLConnection) conn_moodle).disconnect();
-                } else {
-                    ((HttpsURLConnection) conn_moodle).disconnect();
-                }
-            }
-        }
-    }
 
     // trusting all certificate
     public void doTrustToCertificates() {
@@ -242,6 +111,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     public void parse_HTML_Source_and_Switch_Activity(String HTMLsource) {
+        //解析html文件，获取全部course课程
         Pattern p_coursename = Pattern.compile("<h3 class=\"coursename\".*?>.*?>(.*?)</a>");
         Matcher m_course = p_coursename.matcher(HTMLsource);
         Pattern p_teachercandidates = Pattern.compile("<div class=\"teachers\">Teacher: <.*?>(.*?)</a>");
@@ -259,6 +129,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             Integer pos = m_course.start();
             boolean flag = true;
             for (String sss : cname) {
+                //检测是否添加过课程
                 if (sss.equals(course_name)) {
                     flag = false;
                 }
@@ -278,8 +149,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
             Integer pos = m_teachercandidates.start();
             cteachersPos.add(pos);
         }
-
-        Intent intent = new Intent(getBaseContext(), CourseListActivity.class);
 
         int cIdx = 0;
         for (int i = 0; i < cteachersPos.size(); ) {
@@ -314,9 +183,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
             cteachersfinal.add(tname);
         }
 
+        //切换Activity，显示课表
+//        Intent intent = new Intent(getBaseContext(), CourseListActivity.class);
+        Intent intent = new Intent(getBaseContext(), BaseFuncActivity.class);
         intent.putStringArrayListExtra("CourseName", cname);
         intent.putStringArrayListExtra("Teachers", cteachersfinal);
         startActivity(intent);
+
     }
 
     public void connect(final String userName, final String userPW) {
@@ -332,12 +205,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             @Override
             protected String doInBackground(String... arg0) {
-                // TODO Auto-generated method stub
                 success = true;
-                moodlePageContent = getMoodleFirstPage(userName, userPW);
+                moodlePageContent = ConnectUtil.getMoodleFirstPage(userName, userPW);
 
-                if (moodlePageContent.equals("Fail to login"))
-                    success = false;
+                if (moodlePageContent.equals("Invalid PortalID or Password"))
+                    success = true;
 
                 return null;
             }
@@ -345,6 +217,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             @Override
             protected void onPostExecute(String result) {
                 if (success) {
+                    //解析页面
                     parse_HTML_Source_and_Switch_Activity(moodlePageContent);
                 } else {
                     alert("Error", "Fail to login");
@@ -354,6 +227,5 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         }.execute("");
     }
-
 
 }

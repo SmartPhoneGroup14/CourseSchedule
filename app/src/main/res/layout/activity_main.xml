@@ -13,16 +13,14 @@
         <LinearLayout
             android:id="@+id/header"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@layout/header_gradient"
-            android:paddingTop="5dip"
-            android:paddingBottom="5dip">
+            android:layout_height="200dp"
+            android:layout_marginTop="-25dp"
+            android:orientation="vertical">
             <!-- Logo Start-->
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dip"
-                android:src="@drawable/moodle" />
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:src="@drawable/slider_admission" />
             <!-- Logo Ends -->
         </LinearLayout>
         <!--  Header Ends -->
@@ -47,6 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dip"
                 android:layout_marginBottom="20dip"
+                android:hint="input HKU portal id"
                 android:singleLine="true" />
 
             <!-- Password Label -->
@@ -80,7 +79,7 @@
                 android:layout_marginTop="40dip"
                 android:layout_marginBottom="40dip"
                 android:gravity="center"
-                android:text="New to Moodle? Register here"
+                android:text="Welcome to Course Schedule"
                 android:textColor="#0b84aa"
                 android:textSize="20dip" />
         </LinearLayout>

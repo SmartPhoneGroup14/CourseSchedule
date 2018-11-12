@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:textSize="13sp" />
 
-        <com.zhuangfei.timetable.view.PerWeekView
+        <hku.cs.group14.timetableview.view.PerWeekView
             android:id="@+id/id_perweekview"
             android:layout_width="35dp"
             android:layout_height="35dp"

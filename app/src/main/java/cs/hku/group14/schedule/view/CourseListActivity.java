@@ -1,4 +1,4 @@
-package cs.hku.group14.schedule;
+package cs.hku.group14.schedule.view;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -8,6 +8,8 @@ import android.widget.SimpleAdapter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import cs.hku.group14.schedule.R;
 
 public class CourseListActivity extends ListActivity {
 
