@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 moodlePageContent = ConnectUtil.getMoodleFirstPage(userName, userPW);
 
                 if (moodlePageContent.equals("Invalid PortalID or Password"))
-                    success = true;
+                    success = false;
 
                 return null;
             }
