@@ -87,10 +87,60 @@ public class OnDateBuildAapter implements ISchedule.OnDateBuildListener {
 
         weekDates = ScheduleSupport.getDateStringFromWeek(curWeek, targetWeek);
         int month = Integer.parseInt(weekDates.get(0));
-        textViews[0].setText(month + "\n月");
+        switch (month) {
+            case 1:
+                textViews[0].setText("Jan");
+                break;
+            case 2:
+                textViews[0].setText("Feb");
+                break;
+            case 3:
+                textViews[0].setText("Mar");
+                break;
+            case 4:
+                textViews[0].setText("Apr");
+                break;
+            case 5:
+                textViews[0].setText("May");
+                break;
+            case 6:
+                textViews[0].setText("Jun");
+                break;
+            case 7:
+                textViews[0].setText("Jul");
+                break;
+            case 8:
+                textViews[0].setText("Aug");
+                break;
+            case 9:
+                textViews[0].setText("Sep");
+                break;
+            case 10:
+                textViews[0].setText("Oct");
+                break;
+            case 11:
+                textViews[0].setText("Nov");
+                break;
+            case 12:
+                textViews[0].setText("Dec");
+                break;
+            default:
+                break;
+        }
         for (int i = 1; i < 8; i++) {
             if (textViews[i] != null) {
-                textViews[i].setText(weekDates.get(i) + "日");
+                int day = Integer.parseInt(weekDates.get(i));
+                String dayText = "";
+                if (day == 1) {
+                    dayText = "1st";
+                } else if (day == 2) {
+                    dayText = "2nd";
+                } else if (day == 3) {
+                    dayText = "3rd";
+                } else {
+                    dayText = day + "th";
+                }
+                textViews[i].setText(dayText);
             }
         }
     }
@@ -128,7 +178,18 @@ public class OnDateBuildAapter implements ISchedule.OnDateBuildListener {
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(width, height);
         layouts[pos].setLayoutParams(lp);
-        textViews[pos].setText(weekDates.get(pos) + "日");
+        int day = Integer.parseInt(weekDates.get(pos));
+        String dayText = "";
+        if (day == 1) {
+            dayText = "1st";
+        } else if (day == 2) {
+            dayText = "2nd";
+        } else if (day == 3) {
+            dayText = "3rd";
+        } else {
+            dayText = day + "th";
+        }
+        textViews[pos].setText(dayText);
 
         return v;
     }
@@ -139,7 +200,7 @@ public class OnDateBuildAapter implements ISchedule.OnDateBuildListener {
      * @return
      */
     public String[] getStringArray() {
-        return new String[]{null, "周一", "周二", "周三", "周四", "周五", "周六", "周日"};
+        return new String[]{null, "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
     }
 
     protected void initDateBackground() {

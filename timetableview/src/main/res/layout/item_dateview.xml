@@ -11,7 +11,7 @@
         android:id="@+id/id_week_day"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="周一"
+        android:text="Monday"
         android:textSize="12sp"
         android:textStyle="bold" />
 

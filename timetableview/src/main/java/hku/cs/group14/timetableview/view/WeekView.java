@@ -210,8 +210,8 @@ public class WeekView extends LinearLayout implements WeekViewEnable<WeekView> {
             TextView weekText = view.findViewById(R.id.id_weektext);
             TextView bottomText = view.findViewById(R.id.id_weektext_bottom);
 
-            weekText.setText("第" + i + "周");
-            if (i == curWeek) bottomText.setText("(本周)");
+            weekText.setText("Week " + i);
+            if (i == curWeek) bottomText.setText("(This Week)");
             PerWeekView perWeekView = view.findViewById(R.id.id_perweekview);
             perWeekView.setData(dataSource(), i);
             perLayout.setOnClickListener(new OnClickListener() {
@@ -246,7 +246,7 @@ public class WeekView extends LinearLayout implements WeekViewEnable<WeekView> {
 
         for (int i = 0; i < layouts.size(); i++) {
             if (curWeek - 1 == i) {
-                textViews.get(i).setText("(本周)");
+                textViews.get(i).setText("(This Week)");
             } else {
                 textViews.get(i).setText("");
             }

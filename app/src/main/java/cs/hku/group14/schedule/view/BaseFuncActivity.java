@@ -31,14 +31,9 @@ import hku.cs.group14.timetableview.model.Schedule;
 import hku.cs.group14.timetableview.view.WeekView;
 
 /**
- * 基础功能演示：
- * 1.周次选择栏
- * 2.透明背景
- * 3.点击监听
- * 4.颜色分配
- * 5.日期高亮
- * 6.日期计算
- * 该界面的代码注释会比较详细，建议从此处开始看起
+ * 基础功能：
+ * 展示所选课程到timetableview中
+ * 添加时间事件到日历
  */
 public class BaseFuncActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -74,8 +69,10 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
             }
         });
 
+        //初始化数据
         mySubjects = SubjectRepertory.loadDefaultSubjects2();
         mySubjects.addAll(SubjectRepertory.loadDefaultSubjects());
+
         titleTextView = findViewById(R.id.id_title);
         layout = findViewById(R.id.id_layout);
         layout.setOnClickListener(this);
@@ -114,7 +111,7 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
 
         mTimetableView.source(mySubjects)
                 .curWeek(1)
-                .curTerm("大三下学期")
+//                .curTerm("Graduate Term one")
                 .maxSlideItem(10)
                 .monthWidthDp(30)
                 //透明度
@@ -127,30 +124,30 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
                         display(scheduleList);
                     }
                 })
-                .callback(new ISchedule.OnItemLongClickListener() {
-                    @Override
-                    public void onLongClick(View v, int day, int start) {
-                        Toast.makeText(BaseFuncActivity.this,
-                                "长按:周" + day + ",第" + start + "节",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                })
+//                .callback(new ISchedule.OnItemLongClickListener() {
+//                    @Override
+//                    public void onLongClick(View v, int day, int start) {
+//                        Toast.makeText(BaseFuncActivity.this,
+//                                "长按:周" + day + ",第" + start + "节",
+//                                Toast.LENGTH_SHORT).show();
+//                    }
+//                })
                 .callback(new ISchedule.OnWeekChangedListener() {
                     @Override
                     public void onWeekChanged(int curWeek) {
-                        titleTextView.setText("第" + curWeek + "周");
+                        titleTextView.setText("Week " + curWeek);
                     }
                 })
-                //旗标布局点击监听
-                .callback(new ISchedule.OnFlaglayoutClickListener() {
-                    @Override
-                    public void onFlaglayoutClick(int day, int start) {
-                        mTimetableView.hideFlaglayout();
-                        Toast.makeText(BaseFuncActivity.this,
-                                "点击了旗标:周" + (day + 1) + ",第" + start + "节",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                })
+//                //旗标布局点击监听
+//                .callback(new ISchedule.OnFlaglayoutClickListener() {
+//                    @Override
+//                    public void onFlaglayoutClick(int day, int start) {
+//                        mTimetableView.hideFlaglayout();
+//                        Toast.makeText(BaseFuncActivity.this,
+//                                "点击了旗标:周" + (day + 1) + ",第" + start + "节",
+//                                Toast.LENGTH_SHORT).show();
+//                    }
+//                })
                 .showView();
     }
 
@@ -165,18 +162,18 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
     }
 
     /**
-     * 周次选择布局的左侧被点击时回调<br/>
+     * 周次选择布局的左侧被点击时回调
      * 对话框修改当前周次
      */
     protected void onWeekLeftLayoutClicked() {
         final String items[] = new String[20];
         int itemCount = mWeekView.itemCount();
         for (int i = 0; i < itemCount; i++) {
-            items[i] = "第" + (i + 1) + "周";
+            items[i] = "Week " + (i + 1);
         }
         target = -1;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("设置当前周");
+        builder.setTitle("Set current week");
         builder.setSingleChoiceItems(items, mTimetableView.curWeek() - 1,
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -184,7 +181,7 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
                         target = i;
                     }
                 });
-        builder.setPositiveButton("设置为当前周", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Set to current week", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (target != -1) {
@@ -193,7 +190,7 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
                 }
             }
         });
-        builder.setNegativeButton("取消", null);
+        builder.setNegativeButton("Cancel", null);
         builder.create().show();
     }
 
@@ -219,51 +216,14 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.top1:
-                        addSubject();
-                        break;
-                    case R.id.top2:
-                        deleteSubject();
-                        break;
-
-                    case R.id.top4:
-                        hideNonThisWeek();
-                        break;
-                    case R.id.top5:
-                        showNonThisWeek();
-                        break;
-                    case R.id.top6:
-                        setMaxItem(8);
-                        break;
-                    case R.id.top7:
-                        setMaxItem(10);
-                        break;
-                    case R.id.top8:
-                        setMaxItem(12);
+                    case R.id.Atc:
+                        AddToCaledar();
                         break;
                     case R.id.top9:
                         showTime();
                         break;
                     case R.id.top10:
                         hideTime();
-                        break;
-                    case R.id.top11:
-                        showWeekView();
-                        break;
-                    case R.id.top12:
-                        hideWeekView();
-                        break;
-                    case R.id.top13:
-                        setMonthWidth();
-                        break;
-                    case R.id.top16:
-                        resetMonthWidth();
-                        break;
-                    case R.id.top14:
-                        hideWeekends();
-                        break;
-                    case R.id.top15:
-                        showWeekends();
                         break;
                     default:
                         break;
@@ -296,62 +256,13 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    /**
-     * 删除课程
-     * 内部使用集合维护课程数据，操作集合的方法来操作它即可
-     * 最后更新一下视图（全局更新）
-     */
-    protected void deleteSubject() {
-        int size = mTimetableView.dataSource().size();
-        int pos = (int) (Math.random() * size);
-        if (size > 0) {
-            mTimetableView.dataSource().remove(pos);
-            mTimetableView.updateView();
-        }
-    }
 
     /**
-     * 添加课程
-     * 内部使用集合维护课程数据，操作集合的方法来操作它即可
-     * 最后更新一下视图（全局更新）
+     * 添加课程到日历中
      */
-    protected void addSubject() {
-        List<Schedule> dataSource = mTimetableView.dataSource();
-        int size = dataSource.size();
-        if (size > 0) {
-            Schedule schedule = dataSource.get(0);
-            dataSource.add(schedule);
-            mTimetableView.updateView();
-        }
-    }
+    protected void AddToCaledar() {
+        //TODO
 
-    /**
-     * 隐藏非本周课程
-     * 修改了内容的显示，所以必须更新全部（性能不高）
-     * 建议：在初始化时设置该属性
-     * <p>
-     * updateView()被调用后，会重新构建课程，课程会回到当前周
-     */
-    protected void hideNonThisWeek() {
-        mTimetableView.isShowNotCurWeek(false).updateView();
-    }
-
-    /**
-     * 显示非本周课程
-     * 修改了内容的显示，所以必须更新全部（性能不高）
-     * 建议：在初始化时设置该属性
-     */
-    protected void showNonThisWeek() {
-        mTimetableView.isShowNotCurWeek(true).updateView();
-    }
-
-    /**
-     * 设置侧边栏最大节次，只影响侧边栏的绘制，对课程内容无影响
-     *
-     * @param num
-     */
-    protected void setMaxItem(int num) {
-        mTimetableView.maxSlideItem(num).updateSlideView();
     }
 
     /**
@@ -380,45 +291,5 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
         mTimetableView.updateSlideView();
     }
 
-    /**
-     * 显示WeekView
-     */
-    protected void showWeekView() {
-        mWeekView.isShow(true);
-    }
 
-    /**
-     * 隐藏WeekView
-     */
-    protected void hideWeekView() {
-        mWeekView.isShow(false);
-    }
-
-    /**
-     * 设置月份宽度
-     */
-    private void setMonthWidth() {
-        mTimetableView.monthWidthDp(50).updateView();
-    }
-
-    /**
-     * 设置月份宽度,默认40dp
-     */
-    private void resetMonthWidth() {
-        mTimetableView.monthWidthDp(40).updateView();
-    }
-
-    /**
-     * 隐藏周末
-     */
-    private void hideWeekends() {
-        mTimetableView.isShowWeekends(false).updateView();
-    }
-
-    /**
-     * 显示周末
-     */
-    private void showWeekends() {
-        mTimetableView.isShowWeekends(true).updateView();
-    }
 }

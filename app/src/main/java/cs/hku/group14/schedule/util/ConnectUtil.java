@@ -2,7 +2,10 @@ package cs.hku.group14.schedule.util;
 
 import android.util.Log;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -51,7 +54,7 @@ public class ConnectUtil {
             BufferedReader reader_portal = new BufferedReader(new InputStreamReader(conn_portal.getInputStream()));
             String HTMLSource = ReadBufferedHTML(reader_portal, htmlBuffer, HTML_BUFFER_SIZE);
             int ticketIDStartPosition = HTMLSource.indexOf("ticket=") + 7;
-            if (ticketIDStartPosition == 6){
+            if (ticketIDStartPosition == 6) {
                 return "Invalid";
             }
             String ticketID = HTMLSource.substring(ticketIDStartPosition, HTMLSource.indexOf("\";", ticketIDStartPosition));
@@ -125,5 +128,49 @@ public class ConnectUtil {
                 }
             }
         }
+    }
+
+
+    public static String getCourseData() {
+        String result = "";
+        try {
+            URL url = new URL("http://39.104.136.13:9080/api/getAllCourses");
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            if (urlConnection.getResponseCode() != 200) {
+                Log.e(TAG, "请求url失败 : " + urlConnection.getResponseCode());
+                Log.e(TAG, urlConnection.getResponseMessage());
+            }
+
+            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+
+            Log.i(TAG, urlConnection.getContent().toString());
+            Log.i(TAG, urlConnection.getResponseMessage());
+
+            result = inputStreamToString(in);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+
+        return result;
+    }
+
+    private static String inputStreamToString(InputStream is) {
+        String rLine = "";
+        StringBuilder answer = new StringBuilder();
+
+        InputStreamReader isr = new InputStreamReader(is);
+
+        BufferedReader rd = new BufferedReader(isr);
+
+        try {
+            while ((rLine = rd.readLine()) != null) {
+                answer.append(rLine);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return answer.toString();
     }
 }

@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,12 +40,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText txt_UserName, txt_UserPW;
     private Button btn_Login;
 
+    private boolean queryFlag = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         initView();
+        queryCourseSchedule();
         doTrustToCertificates();
         CookieHandler.setDefault(new CookieManager());
     }
@@ -230,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     parse_HTML_Source_and_Switch_Activity(moodlePageContent);
                 } else {
                     alert("Error", error);
+                    parse_HTML_Source_and_Switch_Activity(moodlePageContent);
                 }
                 pdialog.hide();
             }
@@ -237,4 +242,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }.execute("");
     }
 
+    //从服务器查询课程时间表
+    public void queryCourseSchedule() {
+        AsyncTask<String, Void, String> task = new AsyncTask<String, Void, String>() {
+            @Override
+            protected String doInBackground(String... strings) {
+                String data = ConnectUtil.getCourseData();
+                if (data.length() > 0) {
+                    queryFlag = true;
+                    Log.i("MainActivity", "查询课表数据成功 : " + data);
+                }else {
+                    queryFlag = false;
+                    Log.i("MainActivity", "查询课表数据失败");
+                }
+                return null;
+            }
+        }.execute("");
+    }
 }
