@@ -111,7 +111,7 @@ public class CalendarUtil {
         event.put(CalendarContract.Events.DTSTART, start);
         event.put(CalendarContract.Events.DTEND, end);
         event.put(CalendarContract.Events.HAS_ALARM, 1);//设置有闹钟提醒
-        event.put(CalendarContract.Events.EVENT_TIMEZONE, "Asia/Shanghai");  //这个是时区，必须有，
+        event.put(CalendarContract.Events.EVENT_TIMEZONE, "Asia/HongKong");  //这个是时区，必须有，
         //添加事件
         Uri newEvent = context.getContentResolver().insert(Uri.parse(CALANDER_EVENT_URL), event);
         if (newEvent == null) {

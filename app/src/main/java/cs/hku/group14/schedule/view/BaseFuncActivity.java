@@ -66,6 +66,7 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_base_func);
 
         moreButton = findViewById(R.id.id_more);
+        moreButton.setVisibility(View.GONE);
         moreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -156,11 +157,6 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
                         int start = schedule.getStart();
                         long beginTime = 1535904000000l
                                 + ((curWeek - 1) * 7 * 24 * 3600 + (day - 1) * 24 * 3600 + 9 * 3600 + (start - 1) * 30 * 60) * 1000l;
-//                        Log.i("LongClick", "curWeek : " + curWeek);
-//                        Log.i("LongClick", "day : " + day);
-//                        Log.i("LongClick", "start : " + start);
-//                        Log.i("LongClick", "Course Time : " + beginTime + " , " + sdf2.format(beginTime));
-
                         AddToCalendar(beginTime, "Add Course to Calendar", schedule.getName());
 //                        Toast.makeText(BaseFuncActivity.this,
 //                                "Course Time : " + beginTime + " , " + sdf2.format(beginTime),
@@ -261,18 +257,18 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
     public void showPopmenu() {
         PopupMenu popup = new PopupMenu(this, moreButton);
         popup.getMenuInflater().inflate(R.menu.popmenu_base_func, popup.getMenu());
-//        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//            public boolean onMenuItemClick(MenuItem item) {
-//                switch (item.getItemId()) {
-//                    case R.id.Atc:
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.Atc:
 //                        AddToCalendar();
-//                        break;
-//                    default:
-//                        break;
-//                }
-//                return true;
-//            }
-//        });
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
 
         popup.show();
     }
@@ -310,6 +306,7 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Boolean result = CalendarUtil.addCalendarEvent(getBaseContext(), title, desc, begintime);
+                Log.i("AddToCalendar","添加课程到日历,begintime : " + begintime);
                 if (result) {
                     Toast.makeText(BaseFuncActivity.this,
                             "Add Course to Calendar Successfully",
@@ -324,7 +321,6 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
         });
         builder.setNegativeButton("Cancel", null);
         builder.create().show();
-
     }
 
     /**
