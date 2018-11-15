@@ -445,7 +445,7 @@ public class SimpleOperater extends AbsOperater {
         if (mView.isShowWeekends()) {
             perWidth = (ScreenUtils.getWidthInPx(context) - mView.monthWidth()) / 7;
         } else {
-            perWidth = (ScreenUtils.getWidthInPx(context) - mView.monthWidth()) / 5;
+            perWidth = (ScreenUtils.getWidthInPx(context) - mView.monthWidth()) / 6;
         }
         return perWidth;
     }

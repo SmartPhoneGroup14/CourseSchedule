@@ -196,7 +196,7 @@ public class PerWeekView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        int mar = (width - 10 * radius) / 6;
+        int mar = (width - 12 * radius) / 6;
         lightPaint.setColor(lightColor);
         grayPaint.setColor(grayColor);
 
@@ -240,6 +240,11 @@ public class PerWeekView extends View {
             end = schedule.getStart() + schedule.getStep() - 1;
             if (end > 27) end = 27;
 
+            //对10:30-12:30的UML进行优化展示
+            if (start == 4 && end == 6) {
+                start = 5;
+                end = 7;
+            }
             //先标记区间的所有位置
             for (int m = start; m <= end; m++) {
                 arr[m - 1][schedule.getDay() - 1] = 1;
@@ -269,10 +274,13 @@ public class PerWeekView extends View {
         }
 
         //再对12小组（行）化为6组（行）
+        //special:上午3小组，化为2行
         t = 0;
         for (int i = 0; i < 12; i += 2) {
             for (int j = 0; j < 6; j++) {
-                if (divide_array[i][j] == 0 && divide_array[i + 1][j] == 0) {
+                if (i == 0 && (divide_array[i][j] == 0 || divide_array[i + 1][j] == 0)) {
+                    tmp[t][j] = 0;
+                } else if (divide_array[i][j] == 0 && divide_array[i + 1][j] == 0) {
                     tmp[t][j] = 0;
                 } else {
                     tmp[t][j] = 1;

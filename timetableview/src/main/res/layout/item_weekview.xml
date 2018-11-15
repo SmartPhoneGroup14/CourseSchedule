@@ -28,9 +28,9 @@
 
         <hku.cs.group14.timetableview.view.PerWeekView
             android:id="@+id/id_perweekview"
-            android:layout_width="38dp"
-            android:layout_height="38dp"
-            android:layout_marginTop="2dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="0dp"
             app:radius="3dp" />
 
         <TextView

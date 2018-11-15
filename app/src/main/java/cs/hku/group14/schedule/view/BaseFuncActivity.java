@@ -227,7 +227,7 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
         String str = "";
         for (Schedule bean : beans) {
             if (bean.getName().equals("Holiday") || bean.getName().equals("Reading")) {
-                str += bean.getName();
+                str = bean.getName();
             } else {
 
                 String starttime = String.valueOf((bean.getStart() - 1) / 2 + 9) + ":"

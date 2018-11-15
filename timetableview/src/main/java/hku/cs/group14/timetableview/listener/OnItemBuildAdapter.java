@@ -31,7 +31,7 @@ public class OnItemBuildAdapter implements ISchedule.OnItemBuildListener {
 //        if (!isThisWeek) {
 //            r = "[非本周]" + r;
 //        }
-        if (name.equals("Holiday") || name.equals("Reading")) {
+        if (name.equals("Holiday") || name.equals("Reading Week")) {
             r = name;
         }
         return r;
