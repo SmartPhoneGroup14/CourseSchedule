@@ -15,16 +15,24 @@ import hku.cs.group14.timetableview.model.Schedule;
 public class OnItemBuildAdapter implements ISchedule.OnItemBuildListener {
     @Override
     public String getItemText(Schedule schedule, boolean isThisWeek) {
-        if (schedule == null || TextUtils.isEmpty(schedule.getName())) return "未命名";
+        if (schedule == null || TextUtils.isEmpty(schedule.getName())) return "unknown";
         if (schedule.getRoom() == null) {
-            if (!isThisWeek)
-                return "[非本周]" + schedule.getName();
+//            if (!isThisWeek)
+//                return "[Non this week]" + schedule.getName();
             return schedule.getName();
         }
 
-        String r = schedule.getName() + "@" + schedule.getRoom();
-        if (!isThisWeek) {
-            r = "[非本周]" + r;
+        String name = schedule.getName();
+        if (name.equals("Analysis and design of enterprise applications in UML")) {
+            name = "UML";
+        }
+
+        String r = name + " @" + schedule.getRoom();
+//        if (!isThisWeek) {
+//            r = "[非本周]" + r;
+//        }
+        if (name.equals("Holiday") || name.equals("Reading")) {
+            r = name;
         }
         return r;
     }

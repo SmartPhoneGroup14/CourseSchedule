@@ -40,12 +40,12 @@
     <!--<item-->
         <!--android:id="@+id/top8"-->
         <!--android:title="最大节次12节" />-->
-    <item
-        android:id="@+id/top9"
-        android:title="Show class time" />
-    <item
-        android:id="@+id/top10"
-        android:title="Hide class time " />
+    <!--<item-->
+        <!--android:id="@+id/top9"-->
+        <!--android:title="Show class time" />-->
+    <!--<item-->
+        <!--android:id="@+id/top10"-->
+        <!--android:title="Hide class time " />-->
     <!--<item-->
         <!--android:id="@+id/top11"-->
         <!--android:title="显示周次选择" />-->

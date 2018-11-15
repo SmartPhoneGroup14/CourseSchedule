@@ -164,7 +164,7 @@ public class OnDateBuildAapter implements ISchedule.OnDateBuildListener {
 
         int month = Integer.parseInt(weekDates.get(0));
         first.setLayoutParams(lp);
-        textViews[0].setText(month + "\n月");
+        textViews[0].setText(month + "\nMonth");
         return first;
     }
 

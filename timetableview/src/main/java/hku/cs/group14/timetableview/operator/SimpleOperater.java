@@ -199,7 +199,7 @@ public class SimpleOperater extends AbsOperater {
             gd.setCornerRadius(mView.corner(false));
         }
 
-        textView.setBackgroundDrawable(gd);
+        textView.setBackground(gd);
         mView.onItemBuildListener().onItemUpdate(layout, textView, countTextView, subject, gd);
 
         textView.setOnClickListener(new View.OnClickListener() {
@@ -275,9 +275,10 @@ public class SimpleOperater extends AbsOperater {
 
         // 判断点击的是第几节课，1：第1节
         final int start = (int) Math.ceil((y / (mView.itemHeight() + mView.marTop())));
-        if (!checkPosition(day, start)) {
-            mView.onSpaceItemClickListener().onSpaceItemClick(day, start);
-        }
+//        if (!checkPosition(day, start)) {
+//            Log.i(TAG,"点击处无课");
+//            mView.onSpaceItemClickListener().onSpaceItemClick(day, start);
+//        }
         final int finalDay = day;
         flagLayout.setOnClickListener(new View.OnClickListener() {
             @Override

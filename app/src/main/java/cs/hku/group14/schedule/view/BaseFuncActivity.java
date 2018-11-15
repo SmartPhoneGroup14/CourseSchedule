@@ -15,14 +15,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import cs.hku.group14.schedule.R;
-import cs.hku.group14.schedule.model.MySubject;
-import cs.hku.group14.schedule.model.SubjectRepertory;
+import cs.hku.group14.schedule.model.ClassEntity;
+import cs.hku.group14.schedule.util.ClassPraseUtil;
 import hku.cs.group14.timetableview.TimetableView;
 import hku.cs.group14.timetableview.listener.ISchedule;
 import hku.cs.group14.timetableview.listener.IWeekView;
@@ -46,7 +47,7 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
     Button moreButton;
     LinearLayout layout;
     TextView titleTextView;
-    List<MySubject> mySubjects;
+    List<ClassEntity> mySubjects;
 
     //记录切换的周次，不一定是当前周
     int target = -1;
@@ -56,7 +57,8 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
 
         Intent intent = this.getIntent();
         ArrayList<String> courseName = intent.getStringArrayListExtra("CourseName");
-        ArrayList<String> teachers = intent.getStringArrayListExtra("Teachers");
+//        ArrayList<String> teachers = intent.getStringArrayListExtra("Teachers");
+        String classJson = intent.getStringExtra("classJsonStr");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_func);
@@ -70,8 +72,20 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
         });
 
         //初始化数据
-        mySubjects = SubjectRepertory.loadDefaultSubjects2();
-        mySubjects.addAll(SubjectRepertory.loadDefaultSubjects());
+//        mySubjects = SubjectRepertory.loadDefaultSubjects2();
+//        mySubjects.addAll(SubjectRepertory.loadDefaultSubjects());
+
+        List<ClassEntity> tmp_mySubjects = ClassPraseUtil.parse(classJson);
+
+        mySubjects = new ArrayList<>();
+        for (ClassEntity entity : tmp_mySubjects) {
+            if (courseName.contains(entity.getCourse())) {
+                mySubjects.add(entity);
+            } else if (entity.getCourse().equals("Holiday") || entity.getCourse().equals("Reading")) {
+                mySubjects.add(entity);
+            }
+
+        }
 
         titleTextView = findViewById(R.id.id_title);
         layout = findViewById(R.id.id_layout);
@@ -87,9 +101,21 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
         mWeekView = findViewById(R.id.id_weekview);
         mTimetableView = findViewById(R.id.id_timetableView);
 
+        //计算当前周次
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Date begin = null;
+        try {
+            begin = sdf.parse("20180903");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        int differ = differentDaysByMillisecond(begin, new Date());
+        int curWeek = differ / 7 + 1;
+
+
         //设置周次选择属性
         mWeekView.source(mySubjects)
-                .curWeek(1)
+                .curWeek(curWeek) //设置当前周
                 .callback(new IWeekView.OnWeekItemClickedListener() {
                     @Override
                     public void onWeekClicked(int week) {
@@ -110,10 +136,11 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
                 .showView();
 
         mTimetableView.source(mySubjects)
-                .curWeek(1)
-//                .curTerm("Graduate Term one")
-                .maxSlideItem(10)
+                .curWeek(curWeek)
+                .curTerm("18-19 Semester1")
+                .maxSlideItem(27)   //设置28节课，30分钟一节
                 .monthWidthDp(30)
+                .isShowNotCurWeek(false)
                 //透明度
                 //日期栏0.1f、侧边栏0.1f，周次选择栏0.6f
                 //透明度范围为0->1，0为全透明，1为不透明
@@ -149,6 +176,8 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
 //                    }
 //                })
                 .showView();
+
+        showTime();
     }
 
     /**
@@ -166,7 +195,7 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
      * 对话框修改当前周次
      */
     protected void onWeekLeftLayoutClicked() {
-        final String items[] = new String[20];
+        final String items[] = new String[16];
         int itemCount = mWeekView.itemCount();
         for (int i = 0; i < itemCount; i++) {
             items[i] = "Week " + (i + 1);
@@ -202,7 +231,18 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
     protected void display(List<Schedule> beans) {
         String str = "";
         for (Schedule bean : beans) {
-            str += bean.getName() + "," + bean.getWeekList().toString() + "," + bean.getStart() + "," + bean.getStep() + "\n";
+            if (bean.getName().equals("Holiday") || bean.getName().equals("Reading")) {
+                str += bean.getName();
+            } else {
+
+                String starttime = String.valueOf((bean.getStart() - 1) / 2 + 9) + ":"
+                        + ((bean.getStart() - 1) % 2 == 0 ? "00" : "30");
+                String endtime = String.valueOf((bean.getStart() + bean.getStep() - 1) / 2 + 9) + ":"
+                        + ((bean.getStart() + bean.getStep() - 1) % 2 == 0 ? "00" : "30");
+                str += bean.getName() + "\n"
+                        + bean.getTeacher() + ", " + bean.getRoom()
+                        + "\nfrom " + starttime + " to " + endtime;
+            }
         }
         Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
     }
@@ -218,12 +258,6 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
                 switch (item.getItemId()) {
                     case R.id.Atc:
                         AddToCaledar();
-                        break;
-                    case R.id.top9:
-                        showTime();
-                        break;
-                    case R.id.top10:
-                        hideTime();
                         break;
                     default:
                         break;
@@ -271,9 +305,13 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
      */
     protected void showTime() {
         String[] times = new String[]{
-                "8:00", "9:00", "10:10", "11:00",
-                "15:00", "16:00", "17:00", "18:00",
-                "19:30", "20:30", "21:30", "22:30"
+                "9:00", "9:30", "10:00", "10:30",
+                "11:00", "11:30", "12:00", "12:30",
+                "13:00", "13:30", "14:00", "14:30",
+                "15:00", "15:30", "16:00", "16:30",
+                "17:00", "17:30", "18:00", "18:30",
+                "19:00", "19:30", "20:00", "20:30",
+                "21:00", "21:30", "22:00"
         };
         OnSlideBuildAdapter listener = (OnSlideBuildAdapter) mTimetableView.onSlideBuildListener();
         listener.setTimes(times)
@@ -291,5 +329,8 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
         mTimetableView.updateSlideView();
     }
 
-
+    public int differentDaysByMillisecond(Date date1, Date date2) {
+        int days = (int) ((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
+        return days;
+    }
 }

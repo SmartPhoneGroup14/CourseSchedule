@@ -9,11 +9,16 @@ import hku.cs.group14.timetableview.model.ScheduleEnable;
 /**
  * 自定义实体类需要实现ScheduleEnable接口并实现getSchedule()
  */
-public class MySubject implements ScheduleEnable {
+public class ClassEntity implements ScheduleEnable {
 
     public static final String EXTRAS_ID = "extras_id";
 
     private int id = 0;
+
+    /**
+     * 课程编号
+     */
+    private String  course;
 
     /**
      * 课程名
@@ -53,6 +58,9 @@ public class MySubject implements ScheduleEnable {
      */
     private int day;
 
+    /**
+     * 学期
+     */
     private String term;
 
     /**
@@ -60,8 +68,16 @@ public class MySubject implements ScheduleEnable {
      */
     private int colorRandom = 0;
 
-    public MySubject() {
+    public ClassEntity() {
         // TODO Auto-generated constructor stub
+    }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
     }
 
     public void setTime(String time) {
@@ -78,20 +94,6 @@ public class MySubject implements ScheduleEnable {
 
     public String getTerm() {
         return term;
-    }
-
-    public MySubject(String term, String name, String room, String teacher, List<Integer> weekList, int start, int step, int day, int colorRandom, String time) {
-        super();
-        this.term = term;
-        this.name = name;
-        this.room = room;
-        this.teacher = teacher;
-        this.weekList = weekList;
-        this.start = start;
-        this.step = step;
-        this.day = day;
-        this.colorRandom = colorRandom;
-        this.time = time;
     }
 
     public String getName() {
@@ -158,6 +160,21 @@ public class MySubject implements ScheduleEnable {
         this.colorRandom = colorRandom;
     }
 
+    public ClassEntity(String term, String course, String name, String room, String teacher, List<Integer> weekList, int start, int step, int day, int colorRandom, String time) {
+        super();
+        this.term = term;
+        this.course = course;
+        this.name = name;
+        this.room = room;
+        this.teacher = teacher;
+        this.weekList = weekList;
+        this.start = start;
+        this.step = step;
+        this.day = day;
+        this.colorRandom = colorRandom;
+        this.time = time;
+    }
+
     @Override
     public Schedule getSchedule() {
         Schedule schedule = new Schedule();
@@ -168,8 +185,9 @@ public class MySubject implements ScheduleEnable {
         schedule.setStep(getStep());
         schedule.setTeacher(getTeacher());
         schedule.setWeekList(getWeekList());
-        schedule.setColorRandom(2);
+        schedule.setColorRandom(getColorRandom());
         schedule.putExtras(EXTRAS_ID, getId());
+
         return schedule;
     }
 

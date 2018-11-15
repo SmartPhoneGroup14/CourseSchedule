@@ -20,10 +20,8 @@ import hku.cs.group14.timetableview.utils.ScreenUtils;
 /**
  * 周次选择栏的每项自定义View,表示某周的有课情况.
  * 使用周一至周五、第1-10节的数据进行绘制,绘制的结果是一个5x5的点阵：
- * <p>
  * 5列分别表示周一至周五
  * 5行分别表示1-2节、3-4节、5-6节、7-8节、9-10节的有课情况
- * <p>
  * 有课的地方用亮色的圆点，没课的地方用暗色的圆点
  */
 
@@ -239,9 +237,9 @@ public class PerWeekView extends View {
             if (end > 10) end = 10;
 
             //标记区间的所有位置
-            for (int m = start; m <= end; m++) {
-                arr[m - 1][schedule.getDay() - 1] = 1;
-            }
+//            for (int m = start; m <= end; m++) {
+//                arr[m - 1][schedule.getDay() - 1] = 1;
+//            }
         }
 
         // 合并分组标记

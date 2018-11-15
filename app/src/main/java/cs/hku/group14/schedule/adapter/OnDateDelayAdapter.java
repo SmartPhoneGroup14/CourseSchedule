@@ -78,8 +78,7 @@ public class OnDateDelayAdapter extends OnDateBuildAapter {
     }
 
     //这段代码可以禁止在开学前自动更新日期栏上的星期高亮
-    //它会使用开学那天的星期作为高亮
-    //你可以根据自己的需求使用
+    //使用开学那天的星期作为高亮
 //    @Override
 //    public void onHighLight() {
 //        if(whenBeginSchool()<=0){
