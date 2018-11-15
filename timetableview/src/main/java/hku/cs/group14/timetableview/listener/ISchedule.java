@@ -39,10 +39,10 @@ public interface ISchedule {
          * 当课程项被点击时回调
          *
          * @param v
-         * @param day   星期，1：周一，7：周日
-         * @param start 节次，从1开始
+         * @param schedule
+         * @param curWeek
          */
-        void onLongClick(View v, int day, int start);
+        void onLongClick(View v, Schedule schedule, int curWeek);
     }
 
     /**

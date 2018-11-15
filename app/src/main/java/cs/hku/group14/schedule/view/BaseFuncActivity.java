@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +24,7 @@ import java.util.List;
 
 import cs.hku.group14.schedule.R;
 import cs.hku.group14.schedule.model.ClassEntity;
+import cs.hku.group14.schedule.util.CalendarUtil;
 import cs.hku.group14.schedule.util.ClassPraseUtil;
 import hku.cs.group14.timetableview.TimetableView;
 import hku.cs.group14.timetableview.listener.ISchedule;
@@ -97,7 +99,8 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
         mTimetableView = findViewById(R.id.id_timetableView);
 
         //计算当前周次
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        final SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMddHHmmss");
         Date begin = null;
         try {
             begin = sdf.parse("20180903");
@@ -146,14 +149,24 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
                         display(scheduleList);
                     }
                 })
-//                .callback(new ISchedule.OnItemLongClickListener() {
-//                    @Override
-//                    public void onLongClick(View v, int day, int start) {
+                .callback(new ISchedule.OnItemLongClickListener() {
+                    @Override
+                    public void onLongClick(View v, Schedule schedule, int curWeek) {
+                        int day = schedule.getDay();
+                        int start = schedule.getStart();
+                        long beginTime = 1535904000000l
+                                + ((curWeek - 1) * 7 * 24 * 3600 + (day - 1) * 24 * 3600 + 9 * 3600 + (start - 1) * 30 * 60) * 1000l;
+//                        Log.i("LongClick", "curWeek : " + curWeek);
+//                        Log.i("LongClick", "day : " + day);
+//                        Log.i("LongClick", "start : " + start);
+//                        Log.i("LongClick", "Course Time : " + beginTime + " , " + sdf2.format(beginTime));
+
+                        AddToCalendar(beginTime, "Add Course to Calendar", schedule.getName());
 //                        Toast.makeText(BaseFuncActivity.this,
-//                                "长按:周" + day + ",第" + start + "节",
+//                                "Course Time : " + beginTime + " , " + sdf2.format(beginTime),
 //                                Toast.LENGTH_SHORT).show();
-//                    }
-//                })
+                    }
+                })
                 .callback(new ISchedule.OnWeekChangedListener() {
                     @Override
                     public void onWeekChanged(int curWeek) {
@@ -226,10 +239,10 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
     protected void display(List<Schedule> beans) {
         String str = "";
         for (Schedule bean : beans) {
-            if (bean.getName().equals("Holiday") || bean.getName().equals("Reading")) {
+            if (bean.getName().equals("Holiday") || bean.getName().equals("Reading Week")) {
                 str = bean.getName();
+                break;
             } else {
-
                 String starttime = String.valueOf((bean.getStart() - 1) / 2 + 9) + ":"
                         + ((bean.getStart() - 1) % 2 == 0 ? "00" : "30");
                 String endtime = String.valueOf((bean.getStart() + bean.getStep() - 1) / 2 + 9) + ":"
@@ -248,18 +261,18 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
     public void showPopmenu() {
         PopupMenu popup = new PopupMenu(this, moreButton);
         popup.getMenuInflater().inflate(R.menu.popmenu_base_func, popup.getMenu());
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.Atc:
-                        AddToCaledar();
-                        break;
-                    default:
-                        break;
-                }
-                return true;
-            }
-        });
+//        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+//            public boolean onMenuItemClick(MenuItem item) {
+//                switch (item.getItemId()) {
+//                    case R.id.Atc:
+//                        AddToCalendar();
+//                        break;
+//                    default:
+//                        break;
+//                }
+//                return true;
+//            }
+//        });
 
         popup.show();
     }
@@ -289,8 +302,28 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
     /**
      * 添加课程到日历中
      */
-    protected void AddToCaledar() {
-        //TODO
+    protected void AddToCalendar(final long begintime, final String title, final String desc) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage(desc);
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Boolean result = CalendarUtil.addCalendarEvent(getBaseContext(), title, desc, begintime);
+                if (result) {
+                    Toast.makeText(BaseFuncActivity.this,
+                            "Add Course to Calendar Successfully",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(BaseFuncActivity.this,
+                            "Add Course Failed",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        });
+        builder.setNegativeButton("Cancel", null);
+        builder.create().show();
 
     }
 

@@ -49,8 +49,13 @@ public class ClassPraseTest {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         Date begin = sdf.parse("20180903");
 
+        long beginTime = sdf.parse("20180903").getTime();
+        System.out.println("begin : " + begin);
+        System.out.println("beginTime : " + beginTime);
+
         int differ = differentDaysByMillisecond(begin, new Date());
         System.out.println("differ : " + differ);
+
 
     }
 

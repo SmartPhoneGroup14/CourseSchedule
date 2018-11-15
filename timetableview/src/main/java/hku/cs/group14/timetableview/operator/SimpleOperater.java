@@ -141,7 +141,7 @@ public class SimpleOperater extends AbsOperater {
      * @param curWeek 当前周
      * @return View
      */
-    private View newItemView(final List<Schedule> originData, final List<Schedule> data, final Schedule subject, Schedule pre, int i, int curWeek) {
+    private View newItemView(final List<Schedule> originData, final List<Schedule> data, final Schedule subject, Schedule pre, int i, final int curWeek) {
         //宽高
         int width = LinearLayout.LayoutParams.MATCH_PARENT;
         int height = mView.itemHeight() * subject.getStep() + mView.marTop() * (subject.getStep() - 1);
@@ -213,7 +213,7 @@ public class SimpleOperater extends AbsOperater {
         textView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                mView.onItemLongClickListener().onLongClick(view, subject.getDay(), subject.getStart());
+                mView.onItemLongClickListener().onLongClick(view, subject, curWeek);
                 return true;
             }
         });

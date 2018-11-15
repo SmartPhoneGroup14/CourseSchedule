@@ -1,5 +1,6 @@
 package cs.hku.group14.schedule;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.widget.EditText;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,6 +28,9 @@ import javax.net.ssl.X509TrustManager;
 import cs.hku.group14.schedule.util.ConnectUtil;
 import cs.hku.group14.schedule.view.BaseFuncActivity;
 import cs.hku.group14.schedule.view.CourseListActivity;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 
 /*
 Smart Phone 目标：
@@ -35,7 +40,7 @@ Smart Phone 目标：
 4、提前一段时间，进行消息提示，可以添加Email 提示。
  */
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, EasyPermissions.PermissionCallbacks {
 
     private EditText txt_UserName, txt_UserPW;
     private Button btn_Login;
@@ -43,10 +48,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean queryFlag = false;
     private String classJson;
 
+    /**
+     * 随便赋值的一个唯一标识码
+     */
+    public static final int OPERATE_CALENDAR = 100;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        checkPerm();
 
         initView();
         queryCourseSchedule();
@@ -132,10 +144,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         while (m_course.find()) {
             String course_name = m_course.group(1);
 
-            String tmp_course = course_name.substring(0,8);
-            if (course_name.contains("Section 1A")){
+            String tmp_course = course_name.substring(0, 8);
+            if (course_name.contains("Section 1A")) {
                 tmp_course += "A";
-            }else if (course_name.contains("Section 1B")){
+            } else if (course_name.contains("Section 1B")) {
                 tmp_course += "B";
             }
 
@@ -202,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         intent.putStringArrayListExtra("CourseName", cname);
 //        intent.putStringArrayListExtra("Teachers", cteachersfinal);
 
-        if (queryFlag == false){
+        if (queryFlag == false) {
             Log.e("Error", "未获取服务器数据,使用备用数据");
             classJson = "[{\"id\":0,\"course\":\"COMP7103A\",\"name\":\"Data mining\",\"room\":\"TT-403\",\"teacher\":\"Prof. Ben Kao\",\"weekList\":[1,2,3,4,6,8,9,10,11,12],\"start\":0,\"step\":3,\"day\":1,\"term\":\"18-19 Semester1\",\"colorRandom\":1}]\"";
         }
@@ -273,5 +285,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return null;
             }
         }.execute("");
+    }
+
+    /**
+     * 检查权限
+     */
+    @AfterPermissionGranted(OPERATE_CALENDAR)
+    private void checkPerm() {
+        String[] params = {Manifest.permission.WRITE_CALENDAR, Manifest.permission.READ_CALENDAR};
+        if (EasyPermissions.hasPermissions(this, params)) {
+            Log.i("MainActivity", "有权限读写日历");
+        } else {
+            Log.i("MainActivity", "申请读写日历权限");
+
+            EasyPermissions.requestPermissions(this, "Auth to Use Calendar", OPERATE_CALENDAR, params);
+        }
+    }
+
+
+    //申请结果会回调到Activity 的 onRequestPermissionsResult() 方法中
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        //requstCode 是 requestPermissions 传入的第三个参数
+        //permissions[] 是申请的权限的数组
+        //grantResults[] 是申请的结果
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+//        Log.i("MainActivity","申请结果 : " + grantResults[0] + " , " + grantResults[1]);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        //如果checkPerm方法，没有注解AfterPermissionGranted，也可以在这里调用该方法。
+
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            //这里需要重新设置Rationale和title，否则默认是英文格式
+            new AppSettingsDialog.Builder(this)
+//                    .setRationale("没有该权限，此应用程序可能无法正常工作。打开应用设置屏幕以修改应用权限")
+//                    .setTitle("必需权限")
+                    .build()
+                    .show();
+        }
     }
 }
