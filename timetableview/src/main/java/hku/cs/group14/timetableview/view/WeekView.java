@@ -51,7 +51,7 @@ public class WeekView extends LinearLayout implements WeekViewEnable<WeekView> {
     private int preIndex = 1;
 
     //多少项
-    private int itemCount = 20;
+    private int itemCount = 16;
 
     private IWeekView.OnWeekItemClickedListener onWeekItemClickedListener;
     private IWeekView.OnWeekLeftClickedListener onWeekLeftClickedListener;

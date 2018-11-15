@@ -19,9 +19,9 @@ import hku.cs.group14.timetableview.utils.ScreenUtils;
 
 /**
  * 周次选择栏的每项自定义View,表示某周的有课情况.
- * 使用周一至周五、第1-10节的数据进行绘制,绘制的结果是一个5x5的点阵：
- * 5列分别表示周一至周五
- * 5行分别表示1-2节、3-4节、5-6节、7-8节、9-10节的有课情况
+ * 绘制6*6的矩阵
+ * 6列表示：周一到周六
+ * 6行表示：9点半-12点半，13点到22点中的（将时间按照30min分为1节，共27节，具体逻辑见代码）
  * 有课的地方用亮色的圆点，没课的地方用暗色的圆点
  */
 
@@ -127,7 +127,10 @@ public class PerWeekView extends View {
         getDataSource().clear();
         for (int i = 0; i < list.size(); i++) {
             Schedule schedule = list.get(i);
-            if (ScheduleSupport.isThisWeek(schedule, curWeek) && schedule.getStart() <= 10 && schedule.getDay() <= 5) {
+            if (ScheduleSupport.isThisWeek(schedule, curWeek)
+                    && !schedule.getName().equals("Holiday")
+                    && !schedule.getName().equals("Reading Week")
+                    && schedule.getDay() <= 6) {
                 getDataSource().add(schedule);
             }
         }
@@ -200,8 +203,8 @@ public class PerWeekView extends View {
         int[][] tmp = getArray();
 
         //绘制点
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 6; j++) {
                 if (tmp[i][j] == 0) {
                     drawPoint(canvas, mar + radius + (mar + 2 * radius) * j, mar + radius + (mar + 2 * radius) * i, radius, grayPaint);
                 } else {
@@ -217,12 +220,13 @@ public class PerWeekView extends View {
      * @return
      */
     public int[][] getArray() {
-        int[][] arr = new int[10][5];
-        int[][] tmp = new int[5][5];
+        int[][] arr = new int[27][6];
+        int[][] divide_array = new int[12][6];
+        int[][] tmp = new int[6][6];
 
         // 初始化数组
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 5; j++) {
+        for (int i = 0; i < 27; i++) {
+            for (int j = 0; j < 6; j++) {
                 arr[i][j] = 0;
             }
         }
@@ -234,22 +238,41 @@ public class PerWeekView extends View {
             Schedule schedule = getDataSource().get(i);
             start = schedule.getStart();
             end = schedule.getStart() + schedule.getStep() - 1;
-            if (end > 10) end = 10;
+            if (end > 27) end = 27;
 
-            //标记区间的所有位置
-//            for (int m = start; m <= end; m++) {
-//                arr[m - 1][schedule.getDay() - 1] = 1;
-//            }
+            //先标记区间的所有位置
+            for (int m = start; m <= end; m++) {
+                arr[m - 1][schedule.getDay() - 1] = 1;
+            }
         }
 
         // 合并分组标记
-        // 用到了10小节的数据来标记
-        // 10小节被分为了5组分别来表示5行的上课状态
+        // 用到了27小节的数据来标记
+        // 27小节被分为了6组分别来表示6行的上课状态
+        // 9:30-12:30,13:00-22:00每1小时为一组
+        // 即27小节的[1,6],[8-26]每2个为一组,共有12小组
         // 每个分组中只要有一个有课，那么该组对外的状态应该为有课
         int t = 0;
-        for (int i = 0; i < 10; i += 2) {
-            for (int j = 0; j < 5; j++) {
+        for (int i = 1; i < 26; i += 2) {
+            if (i == 7) {
+                i = 6;
+                continue;
+            }
+            for (int j = 0; j < 6; j++) {
                 if (arr[i][j] == 0 && arr[i + 1][j] == 0) {
+                    divide_array[t][j] = 0;
+                } else {
+                    divide_array[t][j] = 1;
+                }
+            }
+            t++;
+        }
+
+        //再对12小组（行）化为6组（行）
+        t = 0;
+        for (int i = 0; i < 12; i += 2) {
+            for (int j = 0; j < 6; j++) {
+                if (divide_array[i][j] == 0 && divide_array[i + 1][j] == 0) {
                     tmp[t][j] = 0;
                 } else {
                     tmp[t][j] = 1;
@@ -257,6 +280,7 @@ public class PerWeekView extends View {
             }
             t++;
         }
+
         return tmp;
     }
 

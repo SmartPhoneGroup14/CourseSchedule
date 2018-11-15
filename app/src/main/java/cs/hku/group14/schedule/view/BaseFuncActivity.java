@@ -72,11 +72,7 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
         });
 
         //初始化数据
-//        mySubjects = SubjectRepertory.loadDefaultSubjects2();
-//        mySubjects.addAll(SubjectRepertory.loadDefaultSubjects());
-
         List<ClassEntity> tmp_mySubjects = ClassPraseUtil.parse(classJson);
-
         mySubjects = new ArrayList<>();
         for (ClassEntity entity : tmp_mySubjects) {
             if (courseName.contains(entity.getCourse())) {
@@ -84,7 +80,6 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
             } else if (entity.getCourse().equals("Holiday") || entity.getCourse().equals("Reading")) {
                 mySubjects.add(entity);
             }
-
         }
 
         titleTextView = findViewById(R.id.id_title);
@@ -138,7 +133,7 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
         mTimetableView.source(mySubjects)
                 .curWeek(curWeek)
                 .curTerm("18-19 Semester1")
-                .maxSlideItem(27)   //设置28节课，30分钟一节
+                .maxSlideItem(27)   //设置27节课，30分钟一节
                 .monthWidthDp(30)
                 .isShowNotCurWeek(false)
                 //透明度

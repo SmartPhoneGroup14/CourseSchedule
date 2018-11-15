@@ -250,7 +250,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     parse_HTML_Source_and_Switch_Activity(moodlePageContent);
                 } else {
                     alert("Error", error);
-                    parse_HTML_Source_and_Switch_Activity(moodlePageContent);
                 }
                 pdialog.hide();
             }

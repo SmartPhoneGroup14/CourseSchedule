@@ -51,8 +51,8 @@ public class ClassPraseTest {
 
         int differ = differentDaysByMillisecond(begin, new Date());
         System.out.println("differ : " + differ);
-    }
 
+    }
 
     public static int differentDaysByMillisecond(Date date1, Date date2) {
         int days = (int) ((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
