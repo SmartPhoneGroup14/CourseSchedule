@@ -6,7 +6,7 @@
     <dimen name="lineItemMar1">56dp</dimen>
     <dimen name="lineItemMar2">57dp</dimen>
     <!-- 高度 -->
-    <dimen name="weekItemHeight">20dp</dimen>
+    <dimen name="weekItemHeight">18dp</dimen>
     <dimen name="weekItemMarTop">3dp</dimen>
     <dimen name="weekItemMarLeft">3dp</dimen>
     <dimen name="headHeight">50dp</dimen>

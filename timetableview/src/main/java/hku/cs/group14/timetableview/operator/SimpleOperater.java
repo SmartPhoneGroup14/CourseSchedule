@@ -142,7 +142,7 @@ public class SimpleOperater extends AbsOperater {
      * @return View
      */
     private View newItemView(final List<Schedule> originData, final List<Schedule> data, final Schedule subject, Schedule pre, int i, final int curWeek) {
-        //宽高
+        //构建默认课程项属性
         int width = LinearLayout.LayoutParams.MATCH_PARENT;
         int height = mView.itemHeight() * subject.getStep() + mView.marTop() * (subject.getStep() - 1);
 
@@ -162,6 +162,7 @@ public class SimpleOperater extends AbsOperater {
         }
         lp.setMargins(left, top, right, 0);
 
+        //背景透明
         view.setBackgroundColor(Color.TRANSPARENT);
         view.setTag(subject);
         FrameLayout layout = view.findViewById(R.id.id_course_item_framelayout);
@@ -173,8 +174,10 @@ public class SimpleOperater extends AbsOperater {
         textView.setText(mView.onItemBuildListener().getItemText(subject, isThisWeek));
 
         countTextView.setText("");
+        //默认不可见
         countTextView.setVisibility(View.GONE);
 
+        //设置课程单元格背景
         GradientDrawable gd = new GradientDrawable();
         if (isThisWeek) {
             textView.setTextColor(mView.itemTextColorWithThisWeek());

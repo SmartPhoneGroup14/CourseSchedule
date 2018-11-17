@@ -262,6 +262,7 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
                 switch (item.getItemId()) {
                     case R.id.Atc:
 //                        AddToCalendar();
+                        updateItemHeight(10);
                         break;
                     default:
                         break;
@@ -306,7 +307,7 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Boolean result = CalendarUtil.addCalendarEvent(getBaseContext(), title, desc, begintime);
-                Log.i("AddToCalendar","添加课程到日历,begintime : " + begintime);
+                Log.i("AddToCalendar", "添加课程到日历,begintime : " + begintime);
                 if (result) {
                     Toast.makeText(BaseFuncActivity.this,
                             "Add Course to Calendar Successfully",
@@ -356,5 +357,9 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
     public int differentDaysByMillisecond(Date date1, Date date2) {
         int days = (int) ((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
         return days;
+    }
+
+    public void updateItemHeight(int height) {
+        ISchedule.OnItemBuildListener listener = mTimetableView.onItemBuildListener();
     }
 }
