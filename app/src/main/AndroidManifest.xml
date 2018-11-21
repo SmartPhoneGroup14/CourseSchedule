@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -26,10 +27,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".view.BottomNavigationActivity"></activity>
-        <activity android:name=".view.BaseFuncActivity"
+        <activity
+            android:name=".view.BaseFuncActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".CalculatorActivity"></activity>
     </application>
 
 </manifest>
