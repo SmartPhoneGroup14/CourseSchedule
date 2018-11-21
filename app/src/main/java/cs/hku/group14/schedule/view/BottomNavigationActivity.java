@@ -1,0 +1,134 @@
+package cs.hku.group14.schedule.view;
+
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+
+import com.ashokvarma.bottomnavigation.BottomNavigationBar;
+import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+
+import cs.hku.group14.schedule.R;
+
+public class BottomNavigationActivity extends AppCompatActivity implements BottomNavigationBar.OnTabSelectedListener {
+
+    public static final String TAG = "BottomNavigation";
+
+    private BottomNavigationBar bottomNavigationBar;
+    private Fragment fragmentCourse;
+    private Fragment fragmentGpa;
+    private Fragment fragmentExam;
+    private Fragment fragmentNote;
+    //当前页
+    private Fragment currentFragment;
+
+    int lastSelectedPosition = 0;
+
+    //http://39.104.136.13:9080/api/getAllExams
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+
+        setContentView(R.layout.activity_bottom_navigation);
+
+        bottomNavigationBar = findViewById(R.id.bottom_navigation_bar);
+
+        initBottomNavigation();
+
+        fragmentExam = new ExamFragment();
+        switchFragment(fragmentExam);
+    }
+
+    private void initBottomNavigation() {
+        //要先设计模式后再添加图标！
+        //设置按钮模式  MODE_FIXED表示固定   MODE_SHIFTING表示转移
+        bottomNavigationBar.setMode(BottomNavigationBar.MODE_FIXED);
+        //设置背景风格
+        // BACKGROUND_STYLE_STATIC表示静态的
+        //BACKGROUND_STYLE_RIPPLE表示涟漪的，也就是可以变化的 ，跟随setActiveColor里面的颜色变化
+        bottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_RIPPLE);
+        //添加并设置图标、图标的颜色和文字
+        bottomNavigationBar
+                .addItem(new BottomNavigationItem(R.drawable.ic_home_white_24dp, "Course")).setActiveColor(R.color.blue)
+                .addItem(new BottomNavigationItem(R.drawable.ic_book_white_24dp, "GPA")).setActiveColor(R.color.red)
+                .addItem(new BottomNavigationItem(R.drawable.ic_tv_white_24dp, "Exam")).setActiveColor(R.color.orange)
+                .addItem(new BottomNavigationItem(R.drawable.ic_github_circle_white_24dp, "Notes")).setActiveColor(R.color.brown)
+                .setFirstSelectedPosition(lastSelectedPosition)
+                .initialise();
+
+        bottomNavigationBar.setTabSelectedListener(this);
+    }
+
+    //切换fragment
+    private void switchFragment(Fragment targetFragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        if (targetFragment == null) {
+            Log.e(TAG, "switchFragment targetFragment is null !");
+            return;
+        }
+        if (currentFragment != null) {
+            Log.i(TAG, "switchFragment 隐藏 fragment : " + currentFragment.getClass());
+            fragmentTransaction.hide(currentFragment);
+        }
+        if (!targetFragment.isAdded()) {
+            Log.i(TAG, "添加 fragment : " + targetFragment.getClass());
+            fragmentTransaction.add(R.id.frame_layout, targetFragment);
+        } else {
+            Log.i(TAG, "显示 fragment : " + targetFragment.getClass());
+            fragmentTransaction.show(targetFragment);
+        }
+        currentFragment = targetFragment;
+        fragmentTransaction.commit();
+    }
+
+
+    @Override
+    public void onTabSelected(int position) {
+        Log.i(TAG, "onTabSelected : " + position);
+
+        switch (position) {
+            case 0:
+                if (fragmentCourse == null) {
+                    fragmentCourse = new ExamFragment();
+                }
+                switchFragment(fragmentCourse);
+                break;
+            case 1:
+                if (fragmentGpa == null) {
+                    fragmentGpa = new ExamFragment();
+                }
+                switchFragment(fragmentGpa);
+                break;
+            case 2:
+                if (fragmentExam == null) {
+                    fragmentExam = new ExamFragment();
+                }
+                switchFragment(fragmentExam);
+                break;
+            case 3:
+                if (fragmentNote == null) {
+                    fragmentNote = new ExamFragment();
+                }
+                switchFragment(fragmentNote);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void onTabUnselected(int position) {
+//        Log.d(TAG, "onTabUnselected() called with: " + "position = [" + position + "]");
+    }
+
+    @Override
+    public void onTabReselected(int position) {
+
+    }
+}

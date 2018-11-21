@@ -63,7 +63,7 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
         String classJson = intent.getStringExtra("classJsonStr");
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base_func);
+        setContentView(R.layout.fragment_courses_chedule);
 
         moreButton = findViewById(R.id.id_more);
         moreButton.setVisibility(View.GONE);

@@ -27,7 +27,7 @@ import javax.net.ssl.X509TrustManager;
 
 import cs.hku.group14.schedule.util.ConnectUtil;
 import cs.hku.group14.schedule.view.BaseFuncActivity;
-import cs.hku.group14.schedule.view.CourseListActivity;
+import cs.hku.group14.schedule.view.BottomNavigationActivity;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -113,9 +113,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    protected void alert(String title, String mymessage) {
+    protected void alert(String title, String msg) {
         new AlertDialog.Builder(this)
-                .setMessage(mymessage)
+                .setMessage(msg)
                 .setTitle(title)
                 .setCancelable(true)
                 .setNegativeButton(android.R.string.cancel,
@@ -131,13 +131,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //解析html文件，获取全部course课程
         Pattern p_coursename = Pattern.compile("<h3 class=\"coursename\".*?>.*?>(.*?)</a>");
         Matcher m_course = p_coursename.matcher(HTMLsource);
-        Pattern p_teachercandidates = Pattern.compile("<div class=\"teachers\">Teacher: <.*?>(.*?)</a>");
-        Matcher m_teachercandidates = p_teachercandidates.matcher(HTMLsource);
+//        Pattern p_teachercandidates = Pattern.compile("<div class=\"teachers\">Teacher: <.*?>(.*?)</a>");
+//        Matcher m_teachercandidates = p_teachercandidates.matcher(HTMLsource);
 
-        ArrayList<String> cname = new ArrayList<String>();
+        ArrayList<String> cname = new ArrayList<>();
 //        ArrayList<String> cteachers = new ArrayList<String>();
 //        ArrayList<String> cteachersfinal = new ArrayList<String>();
-        ArrayList<Integer> cnamePos = new ArrayList<Integer>();
+//        ArrayList<Integer> cnamePos = new ArrayList<Integer>();
 //        ArrayList<Integer> cteachersPos = new ArrayList<Integer>();
 //        ArrayList<Integer> cteachersIdx = new ArrayList<Integer>();
 
@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 tmp_course += "B";
             }
 
-            Integer pos = m_course.start();
+//            Integer pos = m_course.start();
             boolean flag = true;
             for (String sss : cname) {
                 //检测是否添加过课程
@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             if (flag) {
                 cname.add(tmp_course);
-                cnamePos.add(pos);
+//                cnamePos.add(pos);
             }
         }
 
@@ -209,12 +209,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        }
 
         //切换Activity，显示课表
-//        Intent intent = new Intent(getBaseContext(), CourseListActivity.class);
-        Intent intent = new Intent(getBaseContext(), BaseFuncActivity.class);
+//        Intent intent = new Intent(getBaseContext(), BottomNavigationActivity.class);
+//        Intent intent = new Intent(getBaseContext(), BaseFuncActivity.class);
+        Intent intent = new Intent(getBaseContext(), BottomNavigationActivity.class);
         intent.putStringArrayListExtra("CourseName", cname);
 //        intent.putStringArrayListExtra("Teachers", cteachersfinal);
 
-        if (queryFlag == false) {
+        if (!queryFlag) {
             Log.e("Error", "未获取服务器数据,使用备用数据");
             classJson = "[{\"id\":0,\"course\":\"COMP7103A\",\"name\":\"Data mining\",\"room\":\"TT-403\",\"teacher\":\"Prof. Ben Kao\",\"weekList\":[1,2,3,4,6,8,9,10,11,12],\"start\":0,\"step\":3,\"day\":1,\"term\":\"18-19 Semester1\",\"colorRandom\":1}]\"";
         }
@@ -240,7 +241,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             protected String doInBackground(String... arg0) {
                 success = true;
                 moodlePageContent = ConnectUtil.getMoodleFirstPage(userName, userPW);
-
 
                 if (moodlePageContent.equals("Invalid")) {
                     success = false;
