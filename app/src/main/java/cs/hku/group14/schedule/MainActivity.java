@@ -26,7 +26,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import cs.hku.group14.schedule.util.ConnectUtil;
-import cs.hku.group14.schedule.view.BaseFuncActivity;
 import cs.hku.group14.schedule.view.BottomNavigationActivity;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -217,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //切换Activity，显示课表
 //        Intent intent = new Intent(getBaseContext(), BottomNavigationActivity.class);
-//        Intent intent = new Intent(getBaseContext(), BaseFuncActivity.class);
+//        Intent intent = new Intent(getBaseContext(), CourseFragment.class);
         Intent intent = new Intent(getBaseContext(), BottomNavigationActivity.class);
         intent.putStringArrayListExtra("CourseName", cname);
 //        intent.putStringArrayListExtra("Teachers", cteachersfinal);

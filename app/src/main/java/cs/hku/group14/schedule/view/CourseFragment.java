@@ -4,12 +4,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -38,9 +43,9 @@ import hku.cs.group14.timetableview.view.WeekView;
  * 展示所选课程到timetableview中
  * 添加时间事件到日历
  */
-public class BaseFuncActivity extends AppCompatActivity implements View.OnClickListener {
+public class CourseFragment extends Fragment implements View.OnClickListener {
 
-    private static final String TAG = "BaseFuncActivity";
+    private static final String TAG = "CourseFragment";
 
     //控件
     TimetableView mTimetableView;
@@ -54,18 +59,17 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
     //记录切换的周次，不一定是当前周
     int target = -1;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.i(TAG, " onCreateView");
+        View view = inflater.inflate(R.layout.fragment_courses_chedule, container, false);
 
-        Intent intent = this.getIntent();
-        ArrayList<String> courseName = intent.getStringArrayListExtra("CourseName");
-//        ArrayList<String> teachers = intent.getStringArrayListExtra("Teachers");
-        String classJson = intent.getStringExtra("classJsonStr");
+        Bundle bundle = getArguments();
+        ArrayList<String> courseName = bundle.getStringArrayList("CourseName");
+        String classJson = bundle.getString("classJsonStr");
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_courses_chedule);
-
-        moreButton = findViewById(R.id.id_more);
+        moreButton = view.findViewById(R.id.id_more);
         moreButton.setVisibility(View.GONE);
         moreButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,19 +89,21 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
             }
         }
 
-        titleTextView = findViewById(R.id.id_title);
-        layout = findViewById(R.id.id_layout);
+        titleTextView = view.findViewById(R.id.id_title);
+        layout = view.findViewById(R.id.id_layout);
         layout.setOnClickListener(this);
-        initTimetableView();
+        initTimetableView(view);
+
+        return view;
     }
 
     /**
      * 初始化课程控件
      */
-    private void initTimetableView() {
+    private void initTimetableView(View view) {
         //获取控件
-        mWeekView = findViewById(R.id.id_weekview);
-        mTimetableView = findViewById(R.id.id_timetableView);
+        mWeekView = view.findViewById(R.id.id_weekview);
+        mTimetableView = view.findViewById(R.id.id_timetableView);
 
         //计算当前周次
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -158,7 +164,7 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
                         long beginTime = 1535904000000l
                                 + ((curWeek - 1) * 7 * 24 * 3600 + (day - 1) * 24 * 3600 + 9 * 3600 + (start - 1) * 30 * 60) * 1000l;
                         AddToCalendar(beginTime, "Add Course to Calendar", schedule.getName());
-//                        Toast.makeText(BaseFuncActivity.this,
+//                        Toast.makeText(CourseFragment.this,
 //                                "Course Time : " + beginTime + " , " + sdf2.format(beginTime),
 //                                Toast.LENGTH_SHORT).show();
                     }
@@ -174,7 +180,7 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
 //                    @Override
 //                    public void onFlaglayoutClick(int day, int start) {
 //                        mTimetableView.hideFlaglayout();
-//                        Toast.makeText(BaseFuncActivity.this,
+//                        Toast.makeText(CourseFragment.this,
 //                                "点击了旗标:周" + (day + 1) + ",第" + start + "节",
 //                                Toast.LENGTH_SHORT).show();
 //                    }
@@ -187,12 +193,12 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
     /**
      * 更新一下，防止因程序在后台时间过长（超过一天）而导致的日期或高亮不准确问题。
      */
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mTimetableView.onDateBuildListener()
-                .onHighLight();
-    }
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        mTimetableView.onDateBuildListener()
+//                .onHighLight();
+//    }
 
     /**
      * 周次选择布局的左侧被点击时回调
@@ -205,7 +211,7 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
             items[i] = "Week " + (i + 1);
         }
         target = -1;
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Set current week");
         builder.setSingleChoiceItems(items, mTimetableView.curWeek() - 1,
                 new DialogInterface.OnClickListener() {
@@ -248,14 +254,14 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
                         + "\nfrom " + starttime + " to " + endtime;
             }
         }
-        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), str, Toast.LENGTH_SHORT).show();
     }
 
     /**
      * 显示弹出菜单
      */
     public void showPopmenu() {
-        PopupMenu popup = new PopupMenu(this, moreButton);
+        PopupMenu popup = new PopupMenu(getActivity(), moreButton);
         popup.getMenuInflater().inflate(R.menu.popmenu_base_func, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
@@ -300,20 +306,20 @@ public class BaseFuncActivity extends AppCompatActivity implements View.OnClickL
      * 添加课程到日历中
      */
     protected void AddToCalendar(final long begintime, final String title, final String desc) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(title);
         builder.setMessage(desc);
         builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Boolean result = CalendarUtil.addCalendarEvent(getBaseContext(), title, desc, begintime);
+                Boolean result = CalendarUtil.addCalendarEvent(getActivity(), title, desc, begintime);
                 Log.i("AddToCalendar", "添加课程到日历,begintime : " + begintime);
                 if (result) {
-                    Toast.makeText(BaseFuncActivity.this,
+                    Toast.makeText(getActivity(),
                             "Add Course to Calendar Successfully",
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(BaseFuncActivity.this,
+                    Toast.makeText(getActivity(),
                             "Add Course Failed",
                             Toast.LENGTH_SHORT).show();
                 }

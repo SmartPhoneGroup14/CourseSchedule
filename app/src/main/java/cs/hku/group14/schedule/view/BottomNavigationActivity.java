@@ -1,5 +1,6 @@
 package cs.hku.group14.schedule.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,6 +10,8 @@ import android.util.Log;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+
+import java.util.ArrayList;
 
 import cs.hku.group14.schedule.R;
 
@@ -23,24 +26,23 @@ public class BottomNavigationActivity extends AppCompatActivity implements Botto
     private Fragment fragmentNote;
     //当前页
     private Fragment currentFragment;
-
+    //底部选中块
     int lastSelectedPosition = 0;
-
+    //
+    private ArrayList<String> courseName;
+    private String classJson;
     //http://39.104.136.13:9080/api/getAllExams
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         setContentView(R.layout.activity_bottom_navigation);
 
         bottomNavigationBar = findViewById(R.id.bottom_navigation_bar);
 
         initBottomNavigation();
-
-        fragmentExam = new ExamFragment();
-        switchFragment(fragmentExam);
+        initFragment();
     }
 
     private void initBottomNavigation() {
@@ -61,6 +63,19 @@ public class BottomNavigationActivity extends AppCompatActivity implements Botto
                 .initialise();
 
         bottomNavigationBar.setTabSelectedListener(this);
+    }
+
+    private void initFragment() {
+        Intent intent = this.getIntent();
+        courseName = intent.getStringArrayListExtra("CourseName");
+//        ArrayList<String> teachers = intent.getStringArrayListExtra("Teachers");
+        classJson = intent.getStringExtra("classJsonStr");
+        fragmentCourse = new CourseFragment();
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList("CourseName", courseName);
+        bundle.putString("classJsonStr", classJson);
+        fragmentCourse.setArguments(bundle);
+        switchFragment(fragmentCourse);
     }
 
     //切换fragment
@@ -95,7 +110,11 @@ public class BottomNavigationActivity extends AppCompatActivity implements Botto
         switch (position) {
             case 0:
                 if (fragmentCourse == null) {
-                    fragmentCourse = new ExamFragment();
+                    fragmentCourse = new CourseFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putStringArrayList("CourseName", courseName);
+                    bundle.putString("classJsonStr", classJson);
+                    fragmentCourse.setArguments(bundle);
                 }
                 switchFragment(fragmentCourse);
                 break;
@@ -113,7 +132,7 @@ public class BottomNavigationActivity extends AppCompatActivity implements Botto
                 break;
             case 3:
                 if (fragmentNote == null) {
-                    fragmentNote = new ExamFragment();
+                    fragmentNote = new NotesFragment();
                 }
                 switchFragment(fragmentNote);
                 break;

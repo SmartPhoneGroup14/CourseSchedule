@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 
 import cs.hku.group14.schedule.R;
 
-public class ExamFragment extends Fragment {
-    private static final String TAG = "ExamFragment";
+public class NotesFragment extends Fragment {
+    private static final String TAG = "NotesFragment";
 
 
     @Nullable
@@ -20,6 +20,7 @@ public class ExamFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.i(TAG, " onCreateView");
         View view = inflater.inflate(R.layout.fragment_exam, container, false);
+
 
         return view;
     }
