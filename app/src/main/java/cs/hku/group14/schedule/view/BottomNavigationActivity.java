@@ -79,6 +79,13 @@ public class BottomNavigationActivity extends AppCompatActivity implements Botto
         bundle.putString("classJsonStr", classJson);
         fragmentCourse.setArguments(bundle);
         switchFragment(fragmentCourse);
+
+//        fragmentExam = new ExamFragment();
+//        Bundle bundle = new Bundle();
+//        bundle.putStringArrayList("CourseName", courseName);
+//        bundle.putString("examJsonStr", examJson);
+//        fragmentExam.setArguments(bundle);
+//        switchFragment(fragmentExam);
     }
 
     //切换fragment

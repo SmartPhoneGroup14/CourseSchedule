@@ -83,9 +83,9 @@ public class ExamFragment extends Fragment {
                 int comma = element.getRemark().indexOf(",");
                 String dateStr = element.getRemark().substring(0, comma);
                 String note = element.getRemark().substring(comma + 1);
-                int differ = 0;
+                long differ = 0;
                 try {
-                    differ = ((int) (sdf.parse(dateStr).getTime() - System.currentTimeMillis()) / (24 * 60 * 60 * 1000));
+                    differ = ((sdf.parse(dateStr).getTime() - System.currentTimeMillis()) / (24 * 60 * 60 * 1000));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }

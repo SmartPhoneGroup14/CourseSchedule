@@ -46,6 +46,7 @@ import hku.cs.group14.timetableview.view.WeekView;
 public class CourseFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "CourseFragment";
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
     //控件
     TimetableView mTimetableView;
@@ -73,7 +74,7 @@ public class CourseFragment extends Fragment implements View.OnClickListener {
         ArrayList<String> courseName = bundle.getStringArrayList("CourseName");
         String classJson = bundle.getString("classJsonStr");
 
-        if (courseName == null || classJson == null){
+        if (courseName == null || classJson == null) {
             Log.e(TAG, "courseName or classJson is null");
             return null;
         }
@@ -101,114 +102,111 @@ public class CourseFragment extends Fragment implements View.OnClickListener {
         titleTextView = view.findViewById(R.id.id_title);
         layout = view.findViewById(R.id.id_layout);
         layout.setOnClickListener(this);
-        initTimetableView(view);
+        //获取控件
+        mWeekView = view.findViewById(R.id.id_weekview);
+        mTimetableView = view.findViewById(R.id.id_timetableView);
+
+        initTimetableView();
 
         return view;
     }
 
     /**
-     * 初始化课程控件
+     * 初始化课程控件--多线程后台更新
      */
-    private void initTimetableView(View view) {
-        //获取控件
-        mWeekView = view.findViewById(R.id.id_weekview);
-        mTimetableView = view.findViewById(R.id.id_timetableView);
+    private void initTimetableView() {
 
-        //计算当前周次
-        @SuppressLint("SimpleDateFormat") final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-//        final SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMddHHmmss");
-        Date begin = null;
-        try {
-            begin = sdf.parse("20180903");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        int differ = differentDaysByMillisecond(begin, new Date());
-        int curWeek = differ / 7 + 1;
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    synchronized (this) {
+                        //计算当前周次
+                        Date begin = begin = sdf.parse("20180903");
+                        int differ = differentDaysByMillisecond(begin, new Date());
+                        int curWeek = differ / 7 + 1;
 
+                        //设置周次选择属性
+                        mWeekView.source(mySubjects)
+                                .curWeek(curWeek) //设置当前周
+                                .callback(new IWeekView.OnWeekItemClickedListener() {
+                                    @Override
+                                    public void onWeekClicked(int week) {
+                                        int cur = mTimetableView.curWeek();
+                                        //更新切换后的日期，从当前周cur->切换的周week
+                                        mTimetableView.onDateBuildListener()
+                                                .onUpdateDate(cur, week);
+                                        mTimetableView.changeWeekOnly(week);
+                                    }
+                                })
+                                .callback(new IWeekView.OnWeekLeftClickedListener() {
+                                    @Override
+                                    public void onWeekLeftClicked() {
+                                        onWeekLeftLayoutClicked();
+                                    }
+                                })
+                                .isShow(false);//设置隐藏，默认显示
 
-        //设置周次选择属性
-        mWeekView.source(mySubjects)
-                .curWeek(curWeek) //设置当前周
-                .callback(new IWeekView.OnWeekItemClickedListener() {
-                    @Override
-                    public void onWeekClicked(int week) {
-                        int cur = mTimetableView.curWeek();
-                        //更新切换后的日期，从当前周cur->切换的周week
-                        mTimetableView.onDateBuildListener()
-                                .onUpdateDate(cur, week);
-                        mTimetableView.changeWeekOnly(week);
-                    }
-                })
-                .callback(new IWeekView.OnWeekLeftClickedListener() {
-                    @Override
-                    public void onWeekLeftClicked() {
-                        onWeekLeftLayoutClicked();
-                    }
-                })
-                .isShow(false)//设置隐藏，默认显示
-                .showView();
+                        mTimetableView.source(mySubjects)
+                                .curWeek(curWeek)
+                                .curTerm("18-19 Semester1")
+                                .maxSlideItem(27)   //设置27节课，30分钟一节
+                                .monthWidthDp(30)
+                                .isShowNotCurWeek(false)
+                                //透明度
+                                //日期栏0.1f、侧边栏0.1f，周次选择栏0.6f
+                                //透明度范围为0->1，0为全透明，1为不透明
+                                // .alpha(0.1f, 0.1f, 0.6f)
+                                .callback(new ISchedule.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(View v, List<Schedule> scheduleList) {
+                                        display(scheduleList);
+                                    }
+                                })
+                                .callback(new ISchedule.OnItemLongClickListener() {
+                                    @Override
+                                    public void onLongClick(View v, Schedule schedule, int curWeek) {
+                                        int day = schedule.getDay();
+                                        int start = schedule.getStart();
+                                        long beginTime = 1535904000000L + ((curWeek - 1) * 7 * 24 * 3600
+                                                + (day - 1) * 24 * 3600 + 9 * 3600 + (start - 1) * 30 * 60) * 1000L;
+                                        AddToCalendar(beginTime, "Add Course to Calendar", schedule.getName());
+                                    }
+                                })
+                                .callback(new ISchedule.OnWeekChangedListener() {
+                                    @SuppressLint("SetTextI18n")
+                                    @Override
+                                    public void onWeekChanged(int curWeek) {
+                                        titleTextView.setText("Week " + curWeek);
+                                    }
+                                });
 
-        mTimetableView.source(mySubjects)
-                .curWeek(curWeek)
-                .curTerm("18-19 Semester1")
-                .maxSlideItem(27)   //设置27节课，30分钟一节
-                .monthWidthDp(30)
-                .isShowNotCurWeek(false)
-                //透明度
-                //日期栏0.1f、侧边栏0.1f，周次选择栏0.6f
-                //透明度范围为0->1，0为全透明，1为不透明
-//                .alpha(0.1f, 0.1f, 0.6f)
-                .callback(new ISchedule.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View v, List<Schedule> scheduleList) {
-                        display(scheduleList);
-                    }
-                })
-                .callback(new ISchedule.OnItemLongClickListener() {
-                    @Override
-                    public void onLongClick(View v, Schedule schedule, int curWeek) {
-                        int day = schedule.getDay();
-                        int start = schedule.getStart();
-                        long beginTime = 1535904000000L
-                                + ((curWeek - 1) * 7 * 24 * 3600 + (day - 1) * 24 * 3600 + 9 * 3600 + (start - 1) * 30 * 60) * 1000L;
-                        AddToCalendar(beginTime, "Add Course to Calendar", schedule.getName());
-//                        Toast.makeText(getActivity(),
-//                                "Course Time : " + beginTime + " , " + sdf2.format(beginTime),
-//                                Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .callback(new ISchedule.OnWeekChangedListener() {
-                    @SuppressLint("SetTextI18n")
-                    @Override
-                    public void onWeekChanged(int curWeek) {
-                        titleTextView.setText("Week " + curWeek);
-                    }
-                })
-//                //旗标布局点击监听
-//                .callback(new ISchedule.OnFlaglayoutClickListener() {
-//                    @Override
-//                    public void onFlaglayoutClick(int day, int start) {
-//                        mTimetableView.hideFlaglayout();
-//                        Toast.makeText(CourseFragment.this,
-//                                "点击了旗标:周" + (day + 1) + ",第" + start + "节",
-//                                Toast.LENGTH_SHORT).show();
-//                    }
-//                })
-                .showView();
+                        showTime();
 
-        showTime();
+                        updateViewOnUiThread();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
     }
 
-//    /**
-//     * 更新一下，防止因程序在后台时间过长（超过一天）而导致的日期或高亮不准确问题。
-//     */
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        mTimetableView.onDateBuildListener()
-//                .onHighLight();
-//    }
+
+    /**
+     * 在UiThread中更新页面
+     */
+    private void updateViewOnUiThread() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mWeekView.showView();
+                mTimetableView.showView();
+                mTimetableView.updateSlideView();
+            }
+        });
+    }
 
     /**
      * 周次选择布局的左侧被点击时回调
@@ -253,13 +251,13 @@ public class CourseFragment extends Fragment implements View.OnClickListener {
                 stringBuffer.append(bean.getName());
                 break;
             } else {
-                String starttime = String.valueOf((bean.getStart() - 1) / 2 + 9) + ":"
+                String startTime = String.valueOf((bean.getStart() - 1) / 2 + 9) + ":"
                         + ((bean.getStart() - 1) % 2 == 0 ? "00" : "30");
-                String endtime = String.valueOf((bean.getStart() + bean.getStep() - 1) / 2 + 9) + ":"
+                String endTime = String.valueOf((bean.getStart() + bean.getStep() - 1) / 2 + 9) + ":"
                         + ((bean.getStart() + bean.getStep() - 1) % 2 == 0 ? "00" : "30");
                 stringBuffer.append(bean.getName()).append("\n")
                         .append(bean.getTeacher()).append(", ").append(bean.getRoom())
-                        .append("\nfrom ").append(starttime).append(" to ").append(endtime);
+                        .append("\nfrom ").append(startTime).append(" to ").append(endTime);
             }
         }
         Toast.makeText(getActivity(), stringBuffer.toString(), Toast.LENGTH_SHORT).show();
@@ -355,24 +353,18 @@ public class CourseFragment extends Fragment implements View.OnClickListener {
         OnSlideBuildAdapter listener = (OnSlideBuildAdapter) mTimetableView.onSlideBuildListener();
         listener.setTimes(times)
                 .setTimeTextColor(Color.BLACK);
-        mTimetableView.updateSlideView();
+//        mTimetableView.updateSlideView();
     }
 
-    /**
-     * 隐藏时间
-     * 将侧边栏监听置Null后，会默认使用默认的构建方法，即不显示时间
-     * 只修改了侧边栏的属性，所以只更新侧边栏即可（性能高），没有必要更新全部（性能低）
-     */
-    protected void hideTime() {
-        mTimetableView.callback((ISchedule.OnSlideBuildListener) null);
-        mTimetableView.updateSlideView();
-    }
 
     public int differentDaysByMillisecond(Date date1, Date date2) {
         return (int) ((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
     }
 
-    public void updateItemHeight(int height) {
-        ISchedule.OnItemBuildListener listener = mTimetableView.onItemBuildListener();
-    }
+//    /**
+//     * 调整高度
+//     */
+//    public void updateItemHeight(int height) {
+//        ISchedule.OnItemBuildListener listener = mTimetableView.onItemBuildListener();
+//    }
 }
