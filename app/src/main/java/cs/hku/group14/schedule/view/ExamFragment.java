@@ -1,6 +1,5 @@
 package cs.hku.group14.schedule.view;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,10 +8,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,11 +39,16 @@ public class ExamFragment extends Fragment {
         LayoutInflater layoutInflater = getLayoutInflater();
 
         Bundle bundle = getArguments();
+        if (bundle == null) {
+            Log.e(TAG, "bundle is null");
+            return;
+        }
+
         ArrayList<String> tmpCourseName = bundle.getStringArrayList("CourseName");
         ArrayList<String> courseName = new ArrayList<>();
         String examJson = bundle.getString("examJsonStr");
 
-        if (courseName == null || examJson == null) {
+        if (tmpCourseName == null || examJson == null) {
             Log.e(TAG, "courseName | examJson is null");
             return;
         }
@@ -60,6 +65,8 @@ public class ExamFragment extends Fragment {
         // 解析exam 信息字符串
         List<ExamEntity> examEntities = ClassPraseUtil.parseExam(examJson);
 
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+
         for (ExamEntity element : examEntities) {
             if (courseName.contains(element.getCourse())) {
                 View cardView = layoutInflater.inflate(R.layout.cardview_news, null);
@@ -72,21 +79,32 @@ public class ExamFragment extends Fragment {
                 setText(courseView, element.getCourse() + "\n" + element.getDescription());
                 setText(dateView, "Date : " + element.getDate());
                 setText(venueView, "Venue : " + element.getVenue());
-                setText(remarkView, element.getRemark());
+
+                int comma = element.getRemark().indexOf(",");
+                String dateStr = element.getRemark().substring(0, comma);
+                String note = element.getRemark().substring(comma + 1);
+                int differ = 0;
+                try {
+                    differ = ((int) (sdf.parse(dateStr).getTime() - System.currentTimeMillis()) / (24 * 60 * 60 * 1000));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                setText(remarkView, "Remain " + differ + " days. \nNote:" + note);
 
                 addCardView(cardView, cardViewLayout);
             }
         }
     }
 
-    private void setBitmap(final ImageView imageView, final Bitmap bitmap) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                imageView.setImageBitmap(bitmap);
-            }
-        });
-    }
+//    private void setBitmap(final ImageView imageView, final Bitmap bitmap) {
+//        getActivity().runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                imageView.setImageBitmap(bitmap);
+//            }
+//        });
+//    }
 
     private void setText(final TextView text, final String value) {
         getActivity().runOnUiThread(new Runnable() {
@@ -113,6 +131,7 @@ public class ExamFragment extends Fragment {
             }
         });
     }
+
 
 //    private void showContentView() {
 //        getActivity().runOnUiThread(new Runnable() {

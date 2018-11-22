@@ -52,7 +52,7 @@ public class BottomNavigationActivity extends AppCompatActivity implements Botto
         //设置背景风格
         // BACKGROUND_STYLE_STATIC表示静态的
         //BACKGROUND_STYLE_RIPPLE表示涟漪的，也就是可以变化的 ，跟随setActiveColor里面的颜色变化
-        bottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_RIPPLE);
+        bottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
         //添加并设置图标、图标的颜色和文字
         bottomNavigationBar
                 .addItem(new BottomNavigationItem(R.drawable.ic_home_white_24dp, "Course")).setActiveColor(R.color.blue)
@@ -101,6 +101,8 @@ public class BottomNavigationActivity extends AppCompatActivity implements Botto
             Log.i(TAG, "显示 fragment : " + targetFragment.getClass());
             fragmentTransaction.show(targetFragment);
         }
+
+
         currentFragment = targetFragment;
         fragmentTransaction.commit();
     }
@@ -150,7 +152,8 @@ public class BottomNavigationActivity extends AppCompatActivity implements Botto
 
     @Override
     public void onTabUnselected(int position) {
-//        Log.d(TAG, "onTabUnselected() called with: " + "position = [" + position + "]");
+        Log.d(TAG, "onTabUnselected() called with: " + "position = [" + position + "]");
+        lastSelectedPosition = position;
     }
 
     @Override

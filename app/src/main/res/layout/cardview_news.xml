@@ -80,7 +80,7 @@
                 android:gravity="left|center"
                 android:textColor="#333333"
                 android:textSize="15dp"
-                tools:text="Notes : Bring you calculator" />
+                tools:text="Remain 20 days. \nNotes : Bring your calculator" />
 
 
         </android.support.v7.widget.LinearLayoutCompat>

@@ -78,14 +78,14 @@ public class CourseFragment extends Fragment implements View.OnClickListener {
             return null;
         }
 
-        moreButton = view.findViewById(R.id.id_more);
-        moreButton.setVisibility(View.GONE);
-        moreButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showPopmenu();
-            }
-        });
+//        moreButton = view.findViewById(R.id.id_more);
+//        moreButton.setVisibility(View.GONE);
+//        moreButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                showPopmenu();
+//            }
+//        });
 
         //初始化数据
         List<ClassEntity> tmp_mySubjects = ClassPraseUtil.parse(classJson);
@@ -265,28 +265,28 @@ public class CourseFragment extends Fragment implements View.OnClickListener {
         Toast.makeText(getActivity(), stringBuffer.toString(), Toast.LENGTH_SHORT).show();
     }
 
-    /**
-     * 显示弹出菜单
-     */
-    public void showPopmenu() {
-        PopupMenu popup = new PopupMenu(Objects.requireNonNull(getActivity()), moreButton);
-        popup.getMenuInflater().inflate(R.menu.popmenu_base_func, popup.getMenu());
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.Atc:
-//                        AddToCalendar();
-                        updateItemHeight(10);
-                        break;
-                    default:
-                        break;
-                }
-                return true;
-            }
-        });
-
-        popup.show();
-    }
+//    /**
+//     * 显示弹出菜单
+//     */
+//    public void showPopmenu() {
+//        PopupMenu popup = new PopupMenu(Objects.requireNonNull(getActivity()), moreButton);
+//        popup.getMenuInflater().inflate(R.menu.popmenu_base_func, popup.getMenu());
+//        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+//            public boolean onMenuItemClick(MenuItem item) {
+//                switch (item.getItemId()) {
+//                    case R.id.Atc:
+////                        AddToCalendar();
+//                        updateItemHeight(10);
+//                        break;
+//                    default:
+//                        break;
+//                }
+//                return true;
+//            }
+//        });
+//
+//        popup.show();
+//    }
 
     @Override
     public void onClick(View view) {

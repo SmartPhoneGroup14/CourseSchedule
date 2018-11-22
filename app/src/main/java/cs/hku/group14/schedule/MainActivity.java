@@ -229,16 +229,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         intent.putExtra("classJsonStr", classJson);
         intent.putExtra("examJsonStr", examJson);
         startActivity(intent);
-
-
     }
 
     public void connect(final String userName, final String userPW) {
-        final ProgressDialog pdialog = new ProgressDialog(this);
+        final ProgressDialog pDialog = new ProgressDialog(this);
 
-        pdialog.setCancelable(false);
-        pdialog.setMessage("Logging in ...");
-        pdialog.show();
+        pDialog.setCancelable(false);
+        pDialog.setMessage("Logging in ...");
+        pDialog.show();
 
         AsyncTask<String, Void, String> task = new AsyncTask<String, Void, String>() {
             boolean success;
@@ -271,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     alert("Error", error);
                 }
-                pdialog.hide();
+                pDialog.hide();
             }
 
         }.execute("");
