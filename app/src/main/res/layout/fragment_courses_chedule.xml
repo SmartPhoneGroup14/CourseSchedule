@@ -1,23 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <include layout="@layout/header_base_func"/>
-
-    <hku.cs.group14.timetableview.view.WeekView
-        android:id="@+id/id_weekview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <hku.cs.group14.timetableview.TimetableView
-        android:id="@+id/id_timetableView"
+    <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/app_white">
-    </hku.cs.group14.timetableview.TimetableView>
+        android:orientation="vertical">
 
-</LinearLayout>
+        <include layout="@layout/header_base_func" />
+
+        <hku.cs.group14.timetableview.view.WeekView
+            android:id="@+id/id_weekview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <hku.cs.group14.timetableview.TimetableView
+            android:id="@+id/id_timetableView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/app_white" />
+
+    </android.support.v7.widget.LinearLayoutCompat>
+
+</android.support.design.widget.CoordinatorLayout>

@@ -133,12 +133,4 @@ public class ExamFragment extends Fragment {
     }
 
 
-//    private void showContentView() {
-//        getActivity().runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                mLoadingView.showContentView();
-//            }
-//        });
-//    }
 }

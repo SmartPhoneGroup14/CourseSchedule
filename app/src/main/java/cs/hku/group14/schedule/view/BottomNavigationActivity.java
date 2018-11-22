@@ -28,7 +28,7 @@ public class BottomNavigationActivity extends AppCompatActivity implements Botto
     private Fragment currentFragment;
     //底部选中块
     int lastSelectedPosition = 0;
-    //
+
     private ArrayList<String> courseName;
     private String classJson;
     private String examJson;
@@ -47,12 +47,12 @@ public class BottomNavigationActivity extends AppCompatActivity implements Botto
 
     private void initBottomNavigation() {
         //要先设计模式后再添加图标！
-        //设置按钮模式  MODE_FIXED表示固定   MODE_SHIFTING表示转移
-        bottomNavigationBar.setMode(BottomNavigationBar.MODE_FIXED);
+        //设置按钮模式  MODE_FIXED表示固定   MODE_SHIFTING 表示转移
+        bottomNavigationBar.setMode(BottomNavigationBar.MODE_SHIFTING);
         //设置背景风格
-        // BACKGROUND_STYLE_STATIC表示静态的
-        //BACKGROUND_STYLE_RIPPLE表示涟漪的，也就是可以变化的 ，跟随setActiveColor里面的颜色变化
-        bottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
+        // BACKGROUND_STYLE_STATIC 表示静态的
+        //BACKGROUND_STYLE_RIPPLE 表示涟漪的，也就是可以变化的 ，跟随setActiveColor里面的颜色变化
+        bottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_RIPPLE);
         //添加并设置图标、图标的颜色和文字
         bottomNavigationBar
                 .addItem(new BottomNavigationItem(R.drawable.ic_home_white_24dp, "Course")).setActiveColor(R.color.blue)
@@ -108,7 +108,6 @@ public class BottomNavigationActivity extends AppCompatActivity implements Botto
             Log.i(TAG, "显示 fragment : " + targetFragment.getClass());
             fragmentTransaction.show(targetFragment);
         }
-
 
         currentFragment = targetFragment;
         fragmentTransaction.commit();

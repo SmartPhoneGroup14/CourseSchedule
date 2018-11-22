@@ -66,19 +66,7 @@ public class CourseFragment extends Fragment implements View.OnClickListener {
         Log.i(TAG, " onCreateView");
         View view = inflater.inflate(R.layout.fragment_courses_chedule, container, false);
 
-        Bundle bundle = getArguments();
-        if (bundle == null) {
-            Log.e(TAG, "bundle is null");
-            return null;
-        }
-        ArrayList<String> courseName = bundle.getStringArrayList("CourseName");
-        String classJson = bundle.getString("classJsonStr");
-
-        if (courseName == null || classJson == null) {
-            Log.e(TAG, "courseName or classJson is null");
-            return null;
-        }
-
+//        暂时不使用more 按钮
 //        moreButton = view.findViewById(R.id.id_more);
 //        moreButton.setVisibility(View.GONE);
 //        moreButton.setOnClickListener(new View.OnClickListener() {
@@ -87,17 +75,6 @@ public class CourseFragment extends Fragment implements View.OnClickListener {
 //                showPopmenu();
 //            }
 //        });
-
-        //初始化数据
-        List<ClassEntity> tmp_mySubjects = ClassPraseUtil.parse(classJson);
-        mySubjects = new ArrayList<>();
-        for (ClassEntity entity : tmp_mySubjects) {
-            if (courseName.contains(entity.getCourse())) {
-                mySubjects.add(entity);
-            } else if (entity.getCourse().equals("Holiday") || entity.getCourse().equals("Reading")) {
-                mySubjects.add(entity);
-            }
-        }
 
         titleTextView = view.findViewById(R.id.id_title);
         layout = view.findViewById(R.id.id_layout);
@@ -121,6 +98,30 @@ public class CourseFragment extends Fragment implements View.OnClickListener {
             public void run() {
                 try {
                     synchronized (this) {
+                        //初始化数据
+                        Bundle bundle = getArguments();
+                        if (bundle == null) {
+                            Log.e(TAG, "bundle is null");
+                            return;
+                        }
+                        ArrayList<String> courseName = bundle.getStringArrayList("CourseName");
+                        String classJson = bundle.getString("classJsonStr");
+
+                        if (courseName == null || classJson == null) {
+                            Log.e(TAG, "courseName or classJson is null");
+                            return;
+                        }
+
+                        List<ClassEntity> tmp_mySubjects = ClassPraseUtil.parse(classJson);
+                        mySubjects = new ArrayList<>();
+                        for (ClassEntity entity : tmp_mySubjects) {
+                            if (courseName.contains(entity.getCourse())) {
+                                mySubjects.add(entity);
+                            } else if (entity.getCourse().equals("Holiday") || entity.getCourse().equals("Reading")) {
+                                mySubjects.add(entity);
+                            }
+                        }
+
                         //计算当前周次
                         Date begin = begin = sdf.parse("20180903");
                         int differ = differentDaysByMillisecond(begin, new Date());

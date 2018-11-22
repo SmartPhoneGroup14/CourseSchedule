@@ -14,7 +14,6 @@ import cs.hku.group14.schedule.R;
 public class NotesFragment extends Fragment {
     private static final String TAG = "NotesFragment";
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

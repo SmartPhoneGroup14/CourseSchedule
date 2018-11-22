@@ -31,14 +31,6 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
-/*
-Smart Phone 目标：
-1、预设数据库数据：课程编号-课程时间，线程后台查询
-2、HKU Portal账号登陆，参考WorkShop1，解析 moodle页面
-3、匹配课程编号，展示课程时间为课程表，使用Git 控件
-4、提前一段时间，进行消息提示，可以添加Email 提示。
- */
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, EasyPermissions.PermissionCallbacks {
 
     private EditText txt_UserName, txt_UserPW;
@@ -216,9 +208,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        }
 
         //切换Activity，显示课表
-//        Intent intent = new Intent(getBaseContext(), BottomNavigationActivity.class);
-//        Intent intent = new Intent(getBaseContext(), CourseFragment.class);
+//        Intent intent = new Intent(getBaseContext(), TestNavigation.class);
         Intent intent = new Intent(getBaseContext(), BottomNavigationActivity.class);
+
         intent.putStringArrayListExtra("CourseName", cname);
 //        intent.putStringArrayListExtra("Teachers", cteachersfinal);
 
