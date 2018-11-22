@@ -173,4 +173,29 @@ public class ConnectUtil {
         }
         return answer.toString();
     }
+
+    public static String getExamData() {
+        String result = "";
+        try {
+            URL url = new URL("http://39.104.136.13:9080/api/getAllExams");
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            if (urlConnection.getResponseCode() != 200) {
+                Log.e(TAG, "请求url失败 : " + urlConnection.getResponseCode());
+                Log.e(TAG, urlConnection.getResponseMessage());
+            }
+
+            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+
+            Log.i(TAG, urlConnection.getContent().toString());
+            Log.i(TAG, urlConnection.getResponseMessage());
+
+            result = inputStreamToString(in);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+
+        return result;
+    }
 }

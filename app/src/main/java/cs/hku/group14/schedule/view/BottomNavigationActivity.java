@@ -31,7 +31,7 @@ public class BottomNavigationActivity extends AppCompatActivity implements Botto
     //
     private ArrayList<String> courseName;
     private String classJson;
-    //http://39.104.136.13:9080/api/getAllExams
+    private String examJson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,10 +66,13 @@ public class BottomNavigationActivity extends AppCompatActivity implements Botto
     }
 
     private void initFragment() {
+        // 从MainActivity获取数据
         Intent intent = this.getIntent();
         courseName = intent.getStringArrayListExtra("CourseName");
 //        ArrayList<String> teachers = intent.getStringArrayListExtra("Teachers");
         classJson = intent.getStringExtra("classJsonStr");
+        examJson = intent.getStringExtra("examJsonStr");
+
         fragmentCourse = new CourseFragment();
         Bundle bundle = new Bundle();
         bundle.putStringArrayList("CourseName", courseName);
@@ -120,13 +123,17 @@ public class BottomNavigationActivity extends AppCompatActivity implements Botto
                 break;
             case 1:
                 if (fragmentGpa == null) {
-                    fragmentGpa = new ExamFragment();
+//                    fragmentGpa = new ExamFragment();
                 }
-                switchFragment(fragmentGpa);
+//                switchFragment(fragmentGpa);
                 break;
             case 2:
                 if (fragmentExam == null) {
                     fragmentExam = new ExamFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putStringArrayList("CourseName", courseName);
+                    bundle.putString("examJsonStr", examJson);
+                    fragmentExam.setArguments(bundle);
                 }
                 switchFragment(fragmentExam);
                 break;

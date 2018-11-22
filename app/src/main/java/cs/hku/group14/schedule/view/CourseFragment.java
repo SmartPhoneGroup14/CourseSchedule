@@ -1,14 +1,13 @@
 package cs.hku.group14.schedule.view;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import cs.hku.group14.schedule.R;
 import cs.hku.group14.schedule.model.ClassEntity;
@@ -66,8 +66,17 @@ public class CourseFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_courses_chedule, container, false);
 
         Bundle bundle = getArguments();
+        if (bundle == null) {
+            Log.e(TAG, "bundle is null");
+            return null;
+        }
         ArrayList<String> courseName = bundle.getStringArrayList("CourseName");
         String classJson = bundle.getString("classJsonStr");
+
+        if (courseName == null || classJson == null){
+            Log.e(TAG, "courseName or classJson is null");
+            return null;
+        }
 
         moreButton = view.findViewById(R.id.id_more);
         moreButton.setVisibility(View.GONE);
@@ -106,8 +115,8 @@ public class CourseFragment extends Fragment implements View.OnClickListener {
         mTimetableView = view.findViewById(R.id.id_timetableView);
 
         //计算当前周次
-        final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        final SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMddHHmmss");
+        @SuppressLint("SimpleDateFormat") final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+//        final SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMddHHmmss");
         Date begin = null;
         try {
             begin = sdf.parse("20180903");
@@ -161,15 +170,16 @@ public class CourseFragment extends Fragment implements View.OnClickListener {
                     public void onLongClick(View v, Schedule schedule, int curWeek) {
                         int day = schedule.getDay();
                         int start = schedule.getStart();
-                        long beginTime = 1535904000000l
-                                + ((curWeek - 1) * 7 * 24 * 3600 + (day - 1) * 24 * 3600 + 9 * 3600 + (start - 1) * 30 * 60) * 1000l;
+                        long beginTime = 1535904000000L
+                                + ((curWeek - 1) * 7 * 24 * 3600 + (day - 1) * 24 * 3600 + 9 * 3600 + (start - 1) * 30 * 60) * 1000L;
                         AddToCalendar(beginTime, "Add Course to Calendar", schedule.getName());
-//                        Toast.makeText(CourseFragment.this,
+//                        Toast.makeText(getActivity(),
 //                                "Course Time : " + beginTime + " , " + sdf2.format(beginTime),
 //                                Toast.LENGTH_SHORT).show();
                     }
                 })
                 .callback(new ISchedule.OnWeekChangedListener() {
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onWeekChanged(int curWeek) {
                         titleTextView.setText("Week " + curWeek);
@@ -190,9 +200,9 @@ public class CourseFragment extends Fragment implements View.OnClickListener {
         showTime();
     }
 
-    /**
-     * 更新一下，防止因程序在后台时间过长（超过一天）而导致的日期或高亮不准确问题。
-     */
+//    /**
+//     * 更新一下，防止因程序在后台时间过长（超过一天）而导致的日期或高亮不准确问题。
+//     */
 //    @Override
 //    protected void onStart() {
 //        super.onStart();
@@ -211,7 +221,7 @@ public class CourseFragment extends Fragment implements View.OnClickListener {
             items[i] = "Week " + (i + 1);
         }
         target = -1;
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
         builder.setTitle("Set current week");
         builder.setSingleChoiceItems(items, mTimetableView.curWeek() - 1,
                 new DialogInterface.OnClickListener() {
@@ -235,33 +245,31 @@ public class CourseFragment extends Fragment implements View.OnClickListener {
 
     /**
      * 显示内容
-     *
-     * @param beans
      */
     protected void display(List<Schedule> beans) {
-        String str = "";
+        StringBuilder stringBuffer = new StringBuilder();
         for (Schedule bean : beans) {
             if (bean.getName().equals("Holiday") || bean.getName().equals("Reading Week")) {
-                str = bean.getName();
+                stringBuffer.append(bean.getName());
                 break;
             } else {
                 String starttime = String.valueOf((bean.getStart() - 1) / 2 + 9) + ":"
                         + ((bean.getStart() - 1) % 2 == 0 ? "00" : "30");
                 String endtime = String.valueOf((bean.getStart() + bean.getStep() - 1) / 2 + 9) + ":"
                         + ((bean.getStart() + bean.getStep() - 1) % 2 == 0 ? "00" : "30");
-                str += bean.getName() + "\n"
-                        + bean.getTeacher() + ", " + bean.getRoom()
-                        + "\nfrom " + starttime + " to " + endtime;
+                stringBuffer.append(bean.getName()).append("\n")
+                        .append(bean.getTeacher()).append(", ").append(bean.getRoom())
+                        .append("\nfrom ").append(starttime).append(" to ").append(endtime);
             }
         }
-        Toast.makeText(getActivity(), str, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), stringBuffer.toString(), Toast.LENGTH_SHORT).show();
     }
 
     /**
      * 显示弹出菜单
      */
     public void showPopmenu() {
-        PopupMenu popup = new PopupMenu(getActivity(), moreButton);
+        PopupMenu popup = new PopupMenu(Objects.requireNonNull(getActivity()), moreButton);
         popup.getMenuInflater().inflate(R.menu.popmenu_base_func, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
@@ -306,7 +314,7 @@ public class CourseFragment extends Fragment implements View.OnClickListener {
      * 添加课程到日历中
      */
     protected void AddToCalendar(final long begintime, final String title, final String desc) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
         builder.setTitle(title);
         builder.setMessage(desc);
         builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
@@ -361,8 +369,7 @@ public class CourseFragment extends Fragment implements View.OnClickListener {
     }
 
     public int differentDaysByMillisecond(Date date1, Date date2) {
-        int days = (int) ((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
-        return days;
+        return (int) ((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
     }
 
     public void updateItemHeight(int height) {

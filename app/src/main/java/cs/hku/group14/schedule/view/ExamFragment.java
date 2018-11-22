@@ -1,5 +1,6 @@
 package cs.hku.group14.schedule.view;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,12 +9,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import cs.hku.group14.schedule.R;
+import cs.hku.group14.schedule.model.ExamEntity;
+import cs.hku.group14.schedule.util.ClassPraseUtil;
 
 public class ExamFragment extends Fragment {
     private static final String TAG = "ExamFragment";
-
 
     @Nullable
     @Override
@@ -21,12 +29,97 @@ public class ExamFragment extends Fragment {
         Log.i(TAG, " onCreateView");
         View view = inflater.inflate(R.layout.fragment_exam, container, false);
 
+        initCardView(view);
         return view;
     }
 
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-//        Log.i(TAG, TAG + " onHiddenChanged hidden : " + hidden);
+    private void initCardView(View view) {
+        LinearLayout cardViewLayout = view.findViewById(R.id.exam_linear_layout);
+
+        LayoutInflater layoutInflater = getLayoutInflater();
+
+        Bundle bundle = getArguments();
+        ArrayList<String> tmpCourseName = bundle.getStringArrayList("CourseName");
+        ArrayList<String> courseName = new ArrayList<>();
+        String examJson = bundle.getString("examJsonStr");
+
+        if (courseName == null || examJson == null) {
+            Log.e(TAG, "courseName | examJson is null");
+            return;
+        }
+
+        // 处理下CourseName中的AB班，去掉AB
+        for (String course : tmpCourseName) {
+            if (course.endsWith("A") || course.endsWith("B")) {
+                courseName.add(course.substring(0, course.length() - 1));
+            } else {
+                courseName.add(course);
+            }
+        }
+
+        // 解析exam 信息字符串
+        List<ExamEntity> examEntities = ClassPraseUtil.parseExam(examJson);
+
+        for (ExamEntity element : examEntities) {
+            if (courseName.contains(element.getCourse())) {
+                View cardView = layoutInflater.inflate(R.layout.cardview_news, null);
+
+                TextView courseView = cardView.findViewById(R.id.card_course);
+                TextView dateView = cardView.findViewById(R.id.card_date);
+                TextView venueView = cardView.findViewById(R.id.card_venue);
+                TextView remarkView = cardView.findViewById(R.id.card_remark);
+
+                setText(courseView, element.getCourse() + "\n" + element.getDescription());
+                setText(dateView, "Date : " + element.getDate());
+                setText(venueView, "Venue : " + element.getVenue());
+                setText(remarkView, element.getRemark());
+
+                addCardView(cardView, cardViewLayout);
+            }
+        }
     }
+
+    private void setBitmap(final ImageView imageView, final Bitmap bitmap) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                imageView.setImageBitmap(bitmap);
+            }
+        });
+    }
+
+    private void setText(final TextView text, final String value) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (value.equals("None")) {
+                    text.setVisibility(View.GONE);
+                } else {
+                    text.setText(value);
+                }
+            }
+        });
+    }
+
+    private void addCardView(final View cardView, final LinearLayout layout) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (cardView.getParent() != null) {
+                    Log.i(TAG, "cardview getParent is not null, removeView ");
+                    ((ViewGroup) cardView.getParent()).removeView(cardView);
+                }
+                layout.addView(cardView);
+            }
+        });
+    }
+
+//    private void showContentView() {
+//        getActivity().runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                mLoadingView.showContentView();
+//            }
+//        });
+//    }
 }

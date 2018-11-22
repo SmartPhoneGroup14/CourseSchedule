@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private boolean queryFlag = false;
     private String classJson;
+    private String examJson;
 
     /**
      * 随便赋值的一个唯一标识码
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initView() {
         btn_Login = (Button) findViewById(R.id.btn_Login);
-        btn_Calculator = (Button)findViewById(R.id.btn_Calculator);
+        btn_Calculator = (Button) findViewById(R.id.btn_Calculator);
         txt_UserName = (EditText) findViewById(R.id.txt_UserName);
         txt_UserPW = (EditText) findViewById(R.id.txt_UserPW);
         // Register the Login button to click listener
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //登陆portal, 获取课程
             connect(uname, upassword);
         }
-        if (v.getId() == R.id.btn_Calculator){
+        if (v.getId() == R.id.btn_Calculator) {
             Intent intent = new Intent(getBaseContext(), CalculatorActivity.class);
             startActivity(intent);
         }
@@ -226,6 +227,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             classJson = "[{\"id\":0,\"course\":\"COMP7103A\",\"name\":\"Data mining\",\"room\":\"TT-403\",\"teacher\":\"Prof. Ben Kao\",\"weekList\":[1,2,3,4,6,8,9,10,11,12],\"start\":0,\"step\":3,\"day\":1,\"term\":\"18-19 Semester1\",\"colorRandom\":1}]\"";
         }
         intent.putExtra("classJsonStr", classJson);
+        intent.putExtra("examJsonStr", examJson);
         startActivity(intent);
 
 
@@ -281,6 +283,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             protected String doInBackground(String... strings) {
                 classJson = ConnectUtil.getCourseData();
+                examJson = ConnectUtil.getExamData();
                 if (classJson.length() > 0) {
                     queryFlag = true;
                     Log.i("MainActivity", "查询课表数据成功 : " + classJson);
