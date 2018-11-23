@@ -233,9 +233,17 @@ public class CourseFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (target != -1) {
+                    //修正weekView 文本内容
                     mWeekView.curWeek(target + 1).updateView();
+
+                    int cur = mTimetableView.curWeek();
+                    //更新切换后的日期，从当前周cur->切换的周week
+                    mTimetableView.onDateBuildListener()
+                            .onUpdateDate(target + 1, cur);
+                    //切换timeTableView的cur周次且修改为当前周
                     mTimetableView.changeWeekForce(target + 1);
                 }
+
             }
         });
         builder.setNegativeButton("Cancel", null);
