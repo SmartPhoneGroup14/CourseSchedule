@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.AnimatedImageDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -225,7 +227,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void connect(final String userName, final String userPW) {
         final ProgressDialog pDialog = new ProgressDialog(this);
-
         pDialog.setCancelable(false);
         pDialog.setMessage("Logging in ...");
         pDialog.show();
@@ -276,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 examJson = ConnectUtil.getExamData();
                 if (classJson.length() > 0) {
                     queryFlag = true;
-                    Log.i("MainActivity", "查询课表数据成功 : " + classJson);
+                    Log.i("MainActivity", "查询课表数据成功");
                 } else {
                     queryFlag = false;
                     Log.i("MainActivity", "查询课表数据失败");
