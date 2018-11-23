@@ -6,4 +6,6 @@ Smart Phone 目标：
 2、HKU Portal账号登陆，参考WorkShop1，解析 moodle页面---done
 3、匹配课程编号，展示课程时间为课程表，使用Git 控件---done
 4、提前1天，可以添加日历、提示。---done
-5、其他
+5、GPA计算器
+6、考试时间展示 ---done
+7、记笔记
