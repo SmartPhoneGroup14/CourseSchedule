@@ -222,6 +222,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         intent.putExtra("classJsonStr", classJson);
         intent.putExtra("examJsonStr", examJson);
+        intent.putExtra("username", txt_UserName.getText().toString());
         startActivity(intent);
     }
 

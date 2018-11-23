@@ -47,7 +47,7 @@
                 android:layout_marginBottom="20dip"
                 android:hint="Input HKU Portal ID"
                 android:singleLine="true"
-                android:text="" />
+                android:text="lexkaing" />
 
             <!-- Password Label -->
             <TextView
@@ -63,7 +63,7 @@
                 android:layout_marginTop="5dip"
                 android:inputType="textPassword"
                 android:singleLine="true"
-                android:text="" />
+                android:text="Ilove121603651" />
 
             <!-- Login button -->
             <Button

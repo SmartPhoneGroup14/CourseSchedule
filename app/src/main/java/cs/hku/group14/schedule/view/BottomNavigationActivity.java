@@ -32,6 +32,7 @@ public class BottomNavigationActivity extends AppCompatActivity implements Botto
     private ArrayList<String> courseName;
     private String classJson;
     private String examJson;
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +57,9 @@ public class BottomNavigationActivity extends AppCompatActivity implements Botto
         //添加并设置图标、图标的颜色和文字
         bottomNavigationBar
                 .addItem(new BottomNavigationItem(R.drawable.ic_home_white_24dp, "Course")).setActiveColor(R.color.blue)
-                .addItem(new BottomNavigationItem(R.drawable.ic_book_white_24dp, "GPA")).setActiveColor(R.color.red)
-                .addItem(new BottomNavigationItem(R.drawable.ic_tv_white_24dp, "Exam")).setActiveColor(R.color.orange)
-                .addItem(new BottomNavigationItem(R.drawable.ic_github_circle_white_24dp, "Notes")).setActiveColor(R.color.brown)
+                .addItem(new BottomNavigationItem(R.drawable.ic_remind_later_light, "GPA")).setActiveColor(R.color.red)
+                .addItem(new BottomNavigationItem(R.drawable.ic_alarm_white_24dp, "Exam")).setActiveColor(R.color.orange)
+                .addItem(new BottomNavigationItem(R.drawable.ic_book_white_24dp, "Notes")).setActiveColor(R.color.brown)
                 .setFirstSelectedPosition(lastSelectedPosition)
                 .initialise();
 
@@ -72,6 +73,7 @@ public class BottomNavigationActivity extends AppCompatActivity implements Botto
 //        ArrayList<String> teachers = intent.getStringArrayListExtra("Teachers");
         classJson = intent.getStringExtra("classJsonStr");
         examJson = intent.getStringExtra("examJsonStr");
+        username = intent.getStringExtra("username");
 
         fragmentCourse = new CourseFragment();
         Bundle bundle = new Bundle();
@@ -148,6 +150,9 @@ public class BottomNavigationActivity extends AppCompatActivity implements Botto
             case 3:
                 if (fragmentNote == null) {
                     fragmentNote = new NotesFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("username", username);
+                    fragmentNote.setArguments(bundle);
                 }
                 switchFragment(fragmentNote);
                 break;
@@ -166,4 +171,5 @@ public class BottomNavigationActivity extends AppCompatActivity implements Botto
     public void onTabReselected(int position) {
 
     }
+
 }
