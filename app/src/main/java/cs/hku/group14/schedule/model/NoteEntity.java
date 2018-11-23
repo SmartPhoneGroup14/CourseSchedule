@@ -3,22 +3,15 @@ package cs.hku.group14.schedule.model;
 import java.util.Date;
 
 public class NoteEntity {
+    private String id;
+
+    private String username;
+
     private String title;
 
     private String body;
 
-    private Date date;
-
-    private String location;
-
-    private int level;
-
-    public NoteEntity(String title, String body, Date date, String location) {
-        this.title = title;
-        this.body = body;
-        this.date = date;
-        this.location = location;
-    }
+    private String date;
 
     public String getTitle() {
         return title;
@@ -36,19 +29,27 @@ public class NoteEntity {
         this.body = body;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
-    public int getLevel() {
-        return level;
+    public String getId() {
+        return id;
     }
 
-    public void setLevel(int level) {
-        this.level = level;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
