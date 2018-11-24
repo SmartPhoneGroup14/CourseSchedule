@@ -11,18 +11,30 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import cs.hku.group14.schedule.R;
+import cs.hku.group14.schedule.custom.DBManager;
+import cs.hku.group14.schedule.custom.NoteManager;
+import cs.hku.group14.schedule.model.NoteEntity;
 
 public class NewNotesFragment extends Fragment {
     private static final String TAG = "NewNotes";
 
-    //新建的文件夹
-    private String currentFolderName;
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 
-    //(false 新建模式   true 编辑模式)
-    private boolean model;
+    //false 新建模式   true 编辑模式
+    private boolean edit;
+
+    private String username;
+    private String title;
+    private String body;
+    private String date;
 
     @Nullable
     @Override
@@ -30,28 +42,32 @@ public class NewNotesFragment extends Fragment {
         Log.i(TAG, " onCreateView");
         View view = inflater.inflate(R.layout.fragment_new_note, container, false);
 
-        //是否带有文件夹名
-        Bundle bundle = new Bundle();
-        currentFolderName = bundle.getString("currentFolderName");
-
-        if (currentFolderName == null) {//编辑模式
-            model = true;//更改状态
-//            currentFolderName = edit_Note.getFolderName();
+        //获取NotesFragment传的参数
+        Bundle bundle = getArguments();
+        edit = bundle.getBoolean("edit");
+        username = bundle.getString("username");
+        if (edit) {
+            title = bundle.getString("title");
+            body = bundle.getString("body");
+            date = bundle.getString("date");
         } else {
-            model = false;
+            date = sdf.format(new Date(System.currentTimeMillis()));
         }
 
-        init_Toolbar(view);
+        initToolbar(view);
+        initView(view);
 
         return view;
     }
 
 
-    private void init_Toolbar(View view) {
+    private void initToolbar(View view) {
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
 
-        toolbar.setNavigationIcon(R.mipmap.icon_backward);//设置取消图标
+        //设置取消图标
+        toolbar.setNavigationIcon(R.mipmap.icon_backward);
+        //取消按钮事件监听
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,31 +76,56 @@ public class NewNotesFragment extends Fragment {
             }
         });
 
-        toolbar.inflateMenu(R.menu.menu_create);//设置右上角的填充菜单
+        //设置右上角的填充菜单
+        toolbar.inflateMenu(R.menu.menu_create);
 
-        if (model) {//编辑模式
+        if (edit) {
+            //编辑模式
+            toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    EditText title = getView().findViewById(R.id.title_note);
+                    EditText body = getView().findViewById(R.id.content_note);
+                    date = sdf.format(new Date(System.currentTimeMillis()));
+                    NoteEntity tmp = new NoteEntity(username, title.getText().toString(), body.getText().toString(), date);
+
+                    NoteManager noteManager = new NoteManager(getActivity());
+                    noteManager.updateNote(tmp);
+
+                    ((NotesFragment) getParentFragment()).returnToNoteList();
+                    Log.i(TAG,"更新 note : " + title);
+                    return false;
+                }
+            });
+        } else {
+            //新建模式
             toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
 
+                    EditText title = getView().findViewById(R.id.title_note);
+                    EditText body = getView().findViewById(R.id.content_note);
+                    date = sdf.format(new Date(System.currentTimeMillis()));
+                    NoteEntity tmp = new NoteEntity(username, title.getText().toString(), body.getText().toString(), date);
+
+                    NoteManager noteManager = new NoteManager(getActivity());
+                    noteManager.addNote(tmp);
+
                     ((NotesFragment) getParentFragment()).returnToNoteList();
+                    Log.i(TAG,"新增 note : " + title);
                     return false;
                 }
             });
-
-
-        } else {//新建模式
-            toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-
-                    ((NotesFragment) getParentFragment()).returnToNoteList();
-                    return false;
-                }
-            });
-
         }
+    }
 
-
+    //初始化控件内容
+    private void initView(View view) {
+        EditText titleView = view.findViewById(R.id.title_note);
+        titleView.setText(title);
+        EditText bodyView = view.findViewById(R.id.content_note);
+        bodyView.setText(body);
+        TextView dateView = view.findViewById(R.id.note_date);
+        dateView.setText("LastModify : " + date);
     }
 }

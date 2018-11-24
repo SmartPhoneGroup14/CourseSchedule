@@ -15,13 +15,20 @@ import android.widget.LinearLayout;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
+import java.util.List;
+
 import cs.hku.group14.schedule.R;
+import cs.hku.group14.schedule.custom.NoteManager;
+import cs.hku.group14.schedule.model.NoteEntity;
 
 public class NoteBodyFragment extends Fragment {
     private static final String TAG = "NoteBodyFragment";
 
     private LinearLayout nothingView;
+
     private FloatingActionsMenu menu;
+
+    private String username;
 
     @Nullable
     @Override
@@ -30,7 +37,9 @@ public class NoteBodyFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_note_body, container, false);
 
         nothingView = view.findViewById(R.id.nothing_background);
-        FloatingActionsMenu menu = view.findViewById(R.id.action_menu);
+
+        Bundle bundle = getArguments();
+        username = bundle.getString("username");
 
         fab_setting(view);
         initNote();
@@ -45,7 +54,11 @@ public class NoteBodyFragment extends Fragment {
             public void run() {
                 try {
                     synchronized (this) {
-
+                        NoteManager noteManager = new NoteManager(getActivity());
+                        List<NoteEntity> result = noteManager.queryNoteList(username);
+                        if (result == null || result.size() <= 0) {
+                            Log.i(TAG, "initNote , notelist is null");
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

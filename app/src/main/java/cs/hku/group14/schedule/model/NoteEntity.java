@@ -52,4 +52,15 @@ public class NoteEntity {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public NoteEntity() {
+
+    }
+
+    public NoteEntity(String username, String title, String body, String date) {
+        this.username = username;
+        this.title = title;
+        this.body = body;
+        this.date = date;
+    }
 }

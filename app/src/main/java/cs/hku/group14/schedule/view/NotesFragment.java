@@ -30,16 +30,19 @@ public class NotesFragment extends Fragment {
         Log.i(TAG, " onCreateView");
         View view = inflater.inflate(R.layout.fragment_note, container, false);
 
+        FragmentManager fragmentManager = getChildFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
         Bundle bundle = new Bundle();
         username = bundle.getString("username");
 
-        FragmentManager fragmentManager = getChildFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.in_from_right, R.anim.out_to_left);
-
-
         noteBodyFragment = new NoteBodyFragment();
-        fragmentTransaction.add(R.id.note_body_layout, noteBodyFragment).commit();
+        noteBodyFragment.setArguments(bundle);
+
+        fragmentTransaction
+                .setCustomAnimations(R.anim.in_from_right, R.anim.out_to_left)
+                .add(R.id.note_body_layout, noteBodyFragment)
+                .commit();
 
         return view;
     }
@@ -52,10 +55,12 @@ public class NotesFragment extends Fragment {
 
         NewNotesFragment fragment = new NewNotesFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("currentFolderName", username);
+        bundle.putString("username", username);
+        bundle.putBoolean("edit", false);
         fragment.setArguments(bundle);
 
         fragmentTransaction
+                .setCustomAnimations(R.anim.in_from_right, R.anim.out_to_left)
                 .replace(R.id.note_body_layout, fragment)
                 .commit();
     }
@@ -64,7 +69,9 @@ public class NotesFragment extends Fragment {
     public void returnToNoteList() {
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
         fragmentTransaction
+                .setCustomAnimations(R.anim.in_from_left, R.anim.out_to_right)
                 .replace(R.id.note_body_layout, noteBodyFragment)
                 .commit();
     }
