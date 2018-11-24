@@ -17,6 +17,7 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import cs.hku.group14.schedule.R;
+import cs.hku.group14.schedule.model.NoteEntity;
 
 public class NotesFragment extends Fragment {
     private static final String TAG = "NotesFragment";
@@ -48,7 +49,7 @@ public class NotesFragment extends Fragment {
     }
 
 
-    //新增note
+    //新增note fragment
     public void addNote() {
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -57,6 +58,28 @@ public class NotesFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putString("username", username);
         bundle.putBoolean("edit", false);
+        fragment.setArguments(bundle);
+
+        fragmentTransaction
+                .setCustomAnimations(R.anim.in_from_right, R.anim.out_to_left)
+                .replace(R.id.note_body_layout, fragment)
+                .commit();
+    }
+
+    //编辑note fragment
+    public void editNote(NoteEntity noteEntity){
+        FragmentManager fragmentManager = getChildFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        NewNotesFragment fragment = new NewNotesFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("username", username);
+        bundle.putBoolean("edit", true);
+        bundle.putString("title",noteEntity.getTitle());
+        bundle.putString("body",noteEntity.getBody());
+        bundle.putString("date",noteEntity.getDate());
+
         fragment.setArguments(bundle);
 
         fragmentTransaction

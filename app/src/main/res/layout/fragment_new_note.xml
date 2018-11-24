@@ -86,7 +86,7 @@
             android:layout_marginRight="10dp"
             android:paddingRight="10dp"
             android:textAlignment="textEnd"
-            tools:text="20181123" />
+            tools:text="LastModify : 2018/11/23 18:09" />
 
     </LinearLayout>
 

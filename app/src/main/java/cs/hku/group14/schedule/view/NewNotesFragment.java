@@ -26,7 +26,7 @@ import cs.hku.group14.schedule.model.NoteEntity;
 public class NewNotesFragment extends Fragment {
     private static final String TAG = "NewNotes";
 
-    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 
     //false 新建模式   true 编辑模式
     private boolean edit;
@@ -119,12 +119,15 @@ public class NewNotesFragment extends Fragment {
         }
     }
 
-    //初始化控件内容
+    //视图初始化
     private void initView(View view) {
+
         EditText titleView = view.findViewById(R.id.title_note);
         titleView.setText(title);
+
         EditText bodyView = view.findViewById(R.id.content_note);
         bodyView.setText(body);
+
         TextView dateView = view.findViewById(R.id.note_date);
         dateView.setText("LastModify : " + date);
     }

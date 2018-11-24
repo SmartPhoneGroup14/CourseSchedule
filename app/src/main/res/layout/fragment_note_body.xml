@@ -24,7 +24,7 @@
             android:id="@+id/action_note"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_format_list_bulleted_black_24dp"
+            android:src="@mipmap/pic_addnote"
             app:fab_colorNormal="@color/white"
             app:fab_colorPressed="@color/blue"
             app:fab_size="mini"
@@ -39,7 +39,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <View
             android:layout_width="100dp"
@@ -56,8 +56,20 @@
 
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/note_item_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp">
+
+        <cs.hku.group14.schedule.view.NoteListView
+            android:id="@+id/list_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:divider="#FFF5EE"
+            android:dividerHeight="3dp"
+            tools:visibility="visible"/>
 
     </android.support.v4.widget.NestedScrollView>
 

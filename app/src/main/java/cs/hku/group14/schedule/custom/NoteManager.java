@@ -1,6 +1,7 @@
 package cs.hku.group14.schedule.custom;
 
 import android.content.Context;
+import android.widget.BaseAdapter;
 
 import java.util.List;
 
@@ -13,9 +14,17 @@ public class NoteManager {
     //数据库管理类
     private DBManager dbManager;
 
+    //适配器
+    private BaseAdapter adapter;
+
     public NoteManager(Context context) {
         this.mContext = context;
         dbManager = new DBManager(mContext);
+    }
+
+    public NoteManager(Context context,BaseAdapter adapter){
+        this(context);
+        this.adapter=adapter;
     }
 
     //新增note
