@@ -133,12 +133,12 @@ public class BottomNavigationActivity extends AppCompatActivity implements Botto
                 break;
             case 1:
                 if (fragmentGpa == null) {
-//                    fragmentGpa = new GPAFragment();
-//                    Bundle bundle = new Bundle();
-//                    bundle.putStringArrayList("CourseName",courseName);
-//                    fragmentGpa.setArguments(bundle);
+                    fragmentGpa = new GPAFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putStringArrayList("CourseName",courseName);
+                    fragmentGpa.setArguments(bundle);
                 }
-//                switchFragment(fragmentGpa);
+                switchFragment(fragmentGpa);
                 break;
             case 2:
                 if (fragmentExam == null) {

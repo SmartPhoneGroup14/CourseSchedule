@@ -178,7 +178,8 @@ public class CourseFragment extends Fragment implements View.OnClickListener {
                                     @SuppressLint("SetTextI18n")
                                     @Override
                                     public void onWeekChanged(int curWeek) {
-                                        titleTextView.setText("Week " + curWeek);
+//                                        titleTextView.setText("Week " + curWeek);
+                                        updateText(titleTextView, "Week " + curWeek);
                                     }
                                 });
 
@@ -205,6 +206,18 @@ public class CourseFragment extends Fragment implements View.OnClickListener {
                 mWeekView.showView();
                 mTimetableView.showView();
                 mTimetableView.updateSlideView();
+            }
+        });
+    }
+
+    /**
+     * 在UiThread中更新页面
+     */
+    private void updateText(final TextView target, final String text) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                target.setText(text);
             }
         });
     }
@@ -268,28 +281,6 @@ public class CourseFragment extends Fragment implements View.OnClickListener {
         Toast.makeText(getActivity(), stringBuffer.toString(), Toast.LENGTH_SHORT).show();
     }
 
-//    /**
-//     * 显示弹出菜单
-//     */
-//    public void showPopmenu() {
-//        PopupMenu popup = new PopupMenu(Objects.requireNonNull(getActivity()), moreButton);
-//        popup.getMenuInflater().inflate(R.menu.popmenu_base_func, popup.getMenu());
-//        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//            public boolean onMenuItemClick(MenuItem item) {
-//                switch (item.getItemId()) {
-//                    case R.id.Atc:
-////                        AddToCalendar();
-//                        updateItemHeight(10);
-//                        break;
-//                    default:
-//                        break;
-//                }
-//                return true;
-//            }
-//        });
-//
-//        popup.show();
-//    }
 
     @Override
     public void onClick(View view) {

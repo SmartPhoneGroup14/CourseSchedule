@@ -1,6 +1,7 @@
 package cs.hku.group14.schedule.custom;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.BaseAdapter;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 import cs.hku.group14.schedule.model.NoteEntity;
 
 public class NoteManager {
-
+    private static final String TAG = "NoteManager";
     private Context mContext;
 
     //数据库管理类
@@ -22,9 +23,9 @@ public class NoteManager {
         dbManager = new DBManager(mContext);
     }
 
-    public NoteManager(Context context,BaseAdapter adapter){
+    public NoteManager(Context context, BaseAdapter adapter) {
         this(context);
-        this.adapter=adapter;
+        this.adapter = adapter;
     }
 
     //新增note
@@ -35,10 +36,12 @@ public class NoteManager {
     //更新note
     public void updateNote(NoteEntity noteEntity) {
         dbManager.updateNote(noteEntity);
+        adapter.notifyDataSetChanged();
     }
 
     //删除note
     public void deleteNote(NoteEntity noteEntity) {
+        adapter.notifyDataSetChanged();
         dbManager.deleteNote(noteEntity);
     }
 

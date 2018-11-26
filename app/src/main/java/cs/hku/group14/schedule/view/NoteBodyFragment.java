@@ -73,10 +73,10 @@ public class NoteBodyFragment extends Fragment {
             public void run() {
                 try {
                     synchronized (this) {
-                        noteManager = new NoteManager(getActivity());
-                        noteList = noteManager.queryNoteList(username);
+//                        noteManager = new NoteManager(getActivity());
+                        noteList = new NoteManager(getActivity()).queryNoteList(username);
                         if (noteList == null || noteList.size() <= 0) {
-                            Log.i(TAG, "initNote , notelist is null");
+                            Log.i(TAG, "initNote , note list is null");
                         } else {
                             //隐藏nothing 背景
                             updateNothingView(nothingView, View.GONE);
@@ -84,7 +84,7 @@ public class NoteBodyFragment extends Fragment {
                             //设置适配器
                             MainSwipeAdapter adapter = new MainSwipeAdapter(getActivity(), noteList);
 
-                            //noteManager = new NoteManager(getActivity(), adapter);
+                            noteManager = new NoteManager(getActivity(), adapter);
 
                             NoteMenuCreator mainCreator = new NoteMenuCreator(getActivity());
 
@@ -115,6 +115,7 @@ public class NoteBodyFragment extends Fragment {
                                         case 0:
                                             final NoteEntity select_item = noteList.get(position);
                                             noteList.remove(select_item);
+                                            //sqllite删除note节点 + 更新视图
                                             noteManager.deleteNote(select_item);
                                             updateListView();
                                         default:
@@ -185,12 +186,12 @@ public class NoteBodyFragment extends Fragment {
         });
     }
 
-    @Override
-    public void onResume() {
-        Log.i(TAG, "onResume");
-        super.onResume();
-        noteList = noteManager.queryNoteList(username);
-
-        updateListView();
-    }
+//    @Override
+//    public void onResume() {
+//        Log.i(TAG, "onResume");
+//        super.onResume();
+//        noteList = noteManager.queryNoteList(username);
+//
+//        updateListView();
+//    }
 }

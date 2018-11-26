@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import cs.hku.group14.schedule.model.NoteEntity;
 
 public class DBManager {
+    private static final String TAG = "DBManager";
+
     private Context mContext;
 
     public DBManager(Context context) {
@@ -27,6 +29,9 @@ public class DBManager {
 
         String sql = "insert into notes (username,title,body,date) values (?,?,?,?)";
         database.execSQL(sql, bindArgs);
+
+        Log.i(TAG,"insert note : " + noteEntity.getDate());
+
         database.close();
     }
 
@@ -41,6 +46,9 @@ public class DBManager {
 
         String sql = "update notes set title=?,body=? where id=? and username=?";
         database.execSQL(sql, bindArgs);
+
+        Log.i(TAG,"update note : " + noteEntity.getId());
+
         database.close();
     }
 
@@ -54,6 +62,9 @@ public class DBManager {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         String sql = "delete from notes where id=? and username=?";
         database.execSQL(sql, bindArgs);
+
+        Log.i(TAG,"delete note : " + noteEntity.getId());
+
         database.close();
     }
 

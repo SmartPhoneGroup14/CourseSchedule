@@ -15,6 +15,7 @@ import java.util.List;
 import cs.hku.group14.schedule.R;
 import cs.hku.group14.schedule.model.NoteEntity;
 import cs.hku.group14.schedule.util.StringUtil;
+import cs.hku.group14.schedule.view.NoteListView;
 
 /**
  * 主菜单适配器
@@ -58,6 +59,9 @@ public class MainSwipeAdapter extends BaseAdapter {
         TextView dayView = convertView.findViewById(R.id.day_item);
         //设置标题
         titleView.setText(note.getTitle());
+        monthView.setText(String.valueOf(month + 1));
+        dayView.setText(String.valueOf(day));
+
         //设置星期、日期
         switch (weekday) {
             case Calendar.MONDAY:
@@ -84,8 +88,7 @@ public class MainSwipeAdapter extends BaseAdapter {
             default:
                 break;
         }
-        monthView.setText(month + 1);
-        dayView.setText(day);
+
 
         //设置内容
         String content = note.getBody();
@@ -121,6 +124,5 @@ public class MainSwipeAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return position;
     }
-
 
 }
