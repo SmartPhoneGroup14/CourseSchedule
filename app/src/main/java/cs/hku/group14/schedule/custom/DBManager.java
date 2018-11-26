@@ -3,6 +3,7 @@ package cs.hku.group14.schedule.custom;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -64,8 +65,8 @@ public class DBManager {
         DBHelper dbHelper = DBHelper.getInstance(mContext);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
-        Cursor cursor = database.query("notes", new String[]{"id", "username", "title", "body", "date"}, "username=?",
-                new String[]{"1"}, null, null, null);
+        String sql = "select * from notes where username=?";
+        Cursor cursor = database.rawQuery(sql, new String[]{username});
 
         while (cursor.moveToNext()) {
             NoteEntity tmp = new NoteEntity();
@@ -74,8 +75,11 @@ public class DBManager {
             tmp.setTitle(cursor.getString(2));
             tmp.setBody(cursor.getString(3));
             tmp.setDate(cursor.getString(4));
-
-            result.add(tmp);
+            if (tmp != null && tmp.getDate() != null) {
+                result.add(tmp);
+            }else {
+                Log.i("DB","query note item is null, id : " + tmp.getId());
+            }
         }
 
         cursor.close();
