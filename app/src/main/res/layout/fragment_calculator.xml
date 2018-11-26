@@ -36,21 +36,19 @@
             </android.support.v7.widget.Toolbar>
 
         </android.support.design.widget.AppBarLayout>
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white">
-
-        <LinearLayout
-            android:id="@+id/calculator_linear_layout"
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:background="@android:color/white"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:background="@android:color/white">
 
-        </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
-
+            <LinearLayout
+                android:id="@+id/calculator_linear_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@android:color/white"
+                android:orientation="vertical">
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
     </android.support.v7.widget.LinearLayoutCompat>
 </android.support.design.widget.CoordinatorLayout>
