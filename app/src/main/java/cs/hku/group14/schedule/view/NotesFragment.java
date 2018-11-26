@@ -76,6 +76,7 @@ public class NotesFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putString("username", username);
         bundle.putBoolean("edit", true);
+        bundle.putString("id",noteEntity.getId());
         bundle.putString("title",noteEntity.getTitle());
         bundle.putString("body",noteEntity.getBody());
         bundle.putString("date",noteEntity.getDate());

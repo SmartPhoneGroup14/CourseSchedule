@@ -83,6 +83,8 @@ public class CourseFragment extends Fragment implements View.OnClickListener {
         mWeekView = view.findViewById(R.id.id_weekview);
         mTimetableView = view.findViewById(R.id.id_timetableView);
 
+        mWeekView.isShow(false);
+
         initTimetableView();
 
         return view;
@@ -145,8 +147,8 @@ public class CourseFragment extends Fragment implements View.OnClickListener {
                                     public void onWeekLeftClicked() {
                                         onWeekLeftLayoutClicked();
                                     }
-                                })
-                                .isShow(false);//设置隐藏，默认显示
+                                });
+//                                .isShow(false);//设置隐藏，默认显示--放主线程里更新设置
 
                         mTimetableView.source(mySubjects)
                                 .curWeek(curWeek)

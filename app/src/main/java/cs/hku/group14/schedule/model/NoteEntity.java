@@ -63,4 +63,12 @@ public class NoteEntity {
         this.body = body;
         this.date = date;
     }
+
+    public NoteEntity(String id, String username, String title, String body, String date) {
+        this.id = id;
+        this.username = username;
+        this.title = title;
+        this.body = body;
+        this.date = date;
+    }
 }

@@ -36,7 +36,6 @@ public class NoteManager {
     //更新note
     public void updateNote(NoteEntity noteEntity) {
         dbManager.updateNote(noteEntity);
-        adapter.notifyDataSetChanged();
     }
 
     //删除note

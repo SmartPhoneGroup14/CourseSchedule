@@ -32,6 +32,7 @@ public class NewNotesFragment extends Fragment {
     private boolean edit;
 
     private String username;
+    private String id;
     private String title;
     private String body;
     private String date;
@@ -47,6 +48,7 @@ public class NewNotesFragment extends Fragment {
         edit = bundle.getBoolean("edit");
         username = bundle.getString("username");
         if (edit) {
+            id = bundle.getString("id");
             title = bundle.getString("title");
             body = bundle.getString("body");
             date = bundle.getString("date");
@@ -87,11 +89,11 @@ public class NewNotesFragment extends Fragment {
                     EditText title = getView().findViewById(R.id.title_note);
                     EditText body = getView().findViewById(R.id.content_note);
                     date = sdf.format(new Date(System.currentTimeMillis()));
-                    NoteEntity tmp = new NoteEntity(username, title.getText().toString(), body.getText().toString(), date);
+                    NoteEntity tmp = new NoteEntity(id, username, title.getText().toString(), body.getText().toString(), date);
 
                     NoteManager noteManager = new NoteManager(getActivity());
                     noteManager.updateNote(tmp);
-                    Log.i(TAG,"更新 note : " + title);
+                    Log.i(TAG, "更新 note : " + title);
 
                     ((NotesFragment) getParentFragment()).returnToNoteList();
 
@@ -111,7 +113,7 @@ public class NewNotesFragment extends Fragment {
 
                     NoteManager noteManager = new NoteManager(getActivity());
                     noteManager.addNote(tmp);
-                    Log.i(TAG,"新增 note : " + title);
+                    Log.i(TAG, "新增 note : " + title);
 
                     ((NotesFragment) getParentFragment()).returnToNoteList();
                     return false;
