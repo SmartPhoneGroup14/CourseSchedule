@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="46dp"
             android:background="@drawable/border_bottom"
-            app:theme="@style/MyActionButtonStyle">
+            android:theme="@style/MyActionButtonStyle">
 
             <TextView
                 android:id="@+id/title_toolbar"

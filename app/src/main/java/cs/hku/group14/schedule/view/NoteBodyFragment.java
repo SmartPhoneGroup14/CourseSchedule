@@ -156,6 +156,7 @@ public class NoteBodyFragment extends Fragment {
     //更新NoteList 显示
     private void updateListView() {
         int number = noteList != null ? noteList.size() : 0;
+        Log.i(TAG, "updateListView , number : " + number);
 
         if (number == 0) {
             //list 数量归零了,显示nothingView.
@@ -178,11 +179,18 @@ public class NoteBodyFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i(TAG,"点击fab按钮");
+                Log.i(TAG, "点击fab按钮");
                 ((NotesFragment) getParentFragment()).addNote();
             }
         });
     }
 
+    @Override
+    public void onResume() {
+        Log.i(TAG, "onResume");
+        super.onResume();
+        noteList = noteManager.queryNoteList(username);
 
+        updateListView();
+    }
 }

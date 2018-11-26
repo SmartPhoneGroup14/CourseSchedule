@@ -91,9 +91,10 @@ public class NewNotesFragment extends Fragment {
 
                     NoteManager noteManager = new NoteManager(getActivity());
                     noteManager.updateNote(tmp);
+                    Log.i(TAG,"更新 note : " + title);
 
                     ((NotesFragment) getParentFragment()).returnToNoteList();
-                    Log.i(TAG,"更新 note : " + title);
+
                     return false;
                 }
             });
@@ -110,9 +111,9 @@ public class NewNotesFragment extends Fragment {
 
                     NoteManager noteManager = new NoteManager(getActivity());
                     noteManager.addNote(tmp);
+                    Log.i(TAG,"新增 note : " + title);
 
                     ((NotesFragment) getParentFragment()).returnToNoteList();
-                    Log.i(TAG,"新增 note : " + title);
                     return false;
                 }
             });
