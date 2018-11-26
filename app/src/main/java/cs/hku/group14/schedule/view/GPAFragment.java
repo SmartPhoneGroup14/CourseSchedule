@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cs.hku.group14.schedule.R;
+import cs.hku.group14.schedule.model.ExamEntity;
 import cs.hku.group14.schedule.util.ClassPraseUtil;
 
 public class GPAFragment extends Fragment {
@@ -48,6 +49,7 @@ public class GPAFragment extends Fragment {
 
         ArrayList<String> tmpCourseName = bundle.getStringArrayList("CourseName");
         ArrayList<String> courseNames = new ArrayList<>();
+        String examJson = bundle.getString("examJsonStr");
 
         if (tmpCourseName == null) {
             Log.e(TAG, "courseName is null");
@@ -64,13 +66,15 @@ public class GPAFragment extends Fragment {
         }
 
         // 解析exam 信息字符串
-        for (String courseName : courseNames) {
-            if (courseName.equals("NULL")!=true) {
+        List<ExamEntity> examEntities = ClassPraseUtil.parseExam(examJson);
+
+        for (ExamEntity element : examEntities) {
+            if (courseNames.contains(element.getCourse())) {
                 View cardView = layoutInflater.inflate(R.layout.cardview_grade, null);
 
                 TextView courseView = cardView.findViewById(R.id.card_course_grade);
 
-                courseView.setText(courseName);
+                courseView.setText(element.getCourse()+" "+element.getDescription());
 
                 addCardView(cardView, cardViewLayout);
             }

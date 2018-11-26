@@ -136,6 +136,7 @@ public class BottomNavigationActivity extends AppCompatActivity implements Botto
                     fragmentGpa = new GPAFragment();
                     Bundle bundle = new Bundle();
                     bundle.putStringArrayList("CourseName",courseName);
+                    bundle.putString("examJsonStr", examJson);
                     fragmentGpa.setArguments(bundle);
                 }
                 switchFragment(fragmentGpa);
