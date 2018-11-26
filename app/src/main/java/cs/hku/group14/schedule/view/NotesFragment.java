@@ -34,7 +34,7 @@ public class NotesFragment extends Fragment {
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        Bundle bundle = new Bundle();
+        Bundle bundle = getArguments();
         username = bundle.getString("username");
 
         noteBodyFragment = new NoteBodyFragment();

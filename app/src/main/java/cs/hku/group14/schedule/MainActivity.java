@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean queryFlag = false;
     private String classJson;
     private String examJson;
+    private String username;
+
 
     /**
      * 随便赋值的一个唯一标识码
@@ -75,11 +77,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btn_Login) {
-            String uname = txt_UserName.getText().toString();
+            username = txt_UserName.getText().toString();
             String upassword = txt_UserPW.getText().toString();
 
             //登陆portal, 获取课程
-            connect(uname, upassword);
+            connect(username, upassword);
         }
         if (v.getId() == R.id.btn_Calculator) {
             Intent intent = new Intent(getBaseContext(), CalculatorActivity.class);
@@ -132,15 +134,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //解析html文件，获取全部course课程
         Pattern p_coursename = Pattern.compile("<h3 class=\"coursename\".*?>.*?>(.*?)</a>");
         Matcher m_course = p_coursename.matcher(HTMLsource);
-//        Pattern p_teachercandidates = Pattern.compile("<div class=\"teachers\">Teacher: <.*?>(.*?)</a>");
-//        Matcher m_teachercandidates = p_teachercandidates.matcher(HTMLsource);
 
         ArrayList<String> cname = new ArrayList<>();
-//        ArrayList<String> cteachers = new ArrayList<String>();
-//        ArrayList<String> cteachersfinal = new ArrayList<String>();
-//        ArrayList<Integer> cnamePos = new ArrayList<Integer>();
-//        ArrayList<Integer> cteachersPos = new ArrayList<Integer>();
-//        ArrayList<Integer> cteachersIdx = new ArrayList<Integer>();
 
         while (m_course.find()) {
             String course_name = m_course.group(1);
@@ -166,55 +161,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
-//        while (m_teachercandidates.find()) {
-//            String string_teachername = m_teachercandidates.group(1);
-//            // int nameStartPosition = string_teachername.indexOf(">")+1;
-//            // int nameEndPosition = string_teachername.indexOf("</a>");
-//            // String teacher_name = string_teachername.substring(nameStartPosition, nameEndPosition);
-//            cteachers.add(string_teachername);
-//            Integer pos = m_teachercandidates.start();
-//            cteachersPos.add(pos);
-//        }
-
-//        int cIdx = 0;
-//        for (int i = 0; i < cteachersPos.size(); ) {
-//            int cpos0 = -1, cpos1 = -1;
-//            int tpos = cteachersPos.get(i);
-//            if (cIdx < cnamePos.size()) {
-//                cpos0 = cnamePos.get(cIdx);
-//            }
-//            if (cIdx + 1 < cnamePos.size()) {
-//                cpos1 = cnamePos.get(cIdx + 1);
-//            }
-//            if (cpos0 < 0 || tpos < cpos0) { /// a course with 2 teachers!? Assume the teacher belongs to the previous course
-//                cteachersIdx.add(cIdx - 1);
-//                i++;
-//            } else if (cpos1 < 0 || (cpos0 < tpos && cpos1 > tpos)) {
-//                cteachersIdx.add(cIdx);
-//                i++;
-//                cIdx++;
-//            } else { /// tpos > cpos1 ==> teacher belongs to next classes
-//                cIdx++;
-//            }
-//        }
-
-//        for (int i = 0; i < cname.size(); i++) {
-//            String tname = "";
-//            for (int j = 0; j < cteachersIdx.size(); j++) {
-//                int cidx = cteachersIdx.get(j);
-//                if (cidx == i) {
-//                    tname += cteachers.get(j);
-//                }
-//            }
-//            cteachersfinal.add(tname);
-//        }
-
         //切换Activity，显示课表
-//        Intent intent = new Intent(getBaseContext(), TestNavigation.class);
         Intent intent = new Intent(getBaseContext(), BottomNavigationActivity.class);
 
         intent.putStringArrayListExtra("CourseName", cname);
-//        intent.putStringArrayListExtra("Teachers", cteachersfinal);
 
         if (!queryFlag) {
             Log.e("Error", "未获取服务器数据,使用备用数据");
@@ -222,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         intent.putExtra("classJsonStr", classJson);
         intent.putExtra("examJsonStr", examJson);
-        intent.putExtra("username", txt_UserName.getText().toString());
+        intent.putExtra("username", username);
         startActivity(intent);
     }
 
