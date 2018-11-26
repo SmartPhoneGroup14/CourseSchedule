@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private EditText txt_UserName, txt_UserPW;
     private Button btn_Login;
-    private Button btn_Calculator;
 
     private boolean queryFlag = false;
     private String classJson;
@@ -63,13 +62,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initView() {
         btn_Login = (Button) findViewById(R.id.btn_Login);
-        btn_Calculator = (Button) findViewById(R.id.btn_Calculator);
         txt_UserName = (EditText) findViewById(R.id.txt_UserName);
         txt_UserPW = (EditText) findViewById(R.id.txt_UserPW);
         // Register the Login button to click listener
         // Whenever the button is clicked, onClick is called
         btn_Login.setOnClickListener(this);
-        btn_Calculator.setOnClickListener(this);
     }
 
     @Override
@@ -80,10 +77,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             //登陆portal, 获取课程
             connect(uname, upassword);
-        }
-        if (v.getId() == R.id.btn_Calculator) {
-            Intent intent = new Intent(getBaseContext(), CalculatorActivity.class);
-            startActivity(intent);
         }
     }
 
