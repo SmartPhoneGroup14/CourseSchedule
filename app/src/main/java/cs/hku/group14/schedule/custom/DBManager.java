@@ -157,7 +157,9 @@ public class DBManager {
         DBHelper dbHelper = DBHelper.getInstance(mContext);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        database.delete("session", "id=?", new String[]{"0"});
+        int del = database.delete("session", "id=?", new String[]{"0"});
+
+        Log.i(TAG, "clearSession, del : " + del);
 
         database.close();
     }

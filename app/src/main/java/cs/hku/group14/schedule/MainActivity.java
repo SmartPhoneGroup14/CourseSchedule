@@ -63,11 +63,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        checkPerm();
 
         initView();
-        queryCourseSchedule();
+
         querySession();
+
+        //在线程里完成
+        queryCourseSchedule();
+
+        checkPerm();
         doTrustToCertificates();
         CookieHandler.setDefault(new CookieManager());
     }
@@ -89,16 +93,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 查询Session
      */
     private void querySession() {
-        SessionEntity entity = dbManager.querySession();
-        if (entity == null) {
-            // 上一次登陆未选择记住密码
-            rememberPwdFlag = false;
-        } else {
+
+        AsyncTask<String, Void, String> task = new AsyncTask<String, Void, String>() {
+
+            @Override
+            protected String doInBackground(String... strings) {
+                SessionEntity entity = dbManager.querySession();
+                if (entity == null) {
+                    // 上一次登陆未选择记住密码
+                    rememberPwdFlag = false;
+                } else {
 //            if ((System.currentTimeMillis() - entity.getTime()) > 5 * 24 * 3600 * 1000) {
-            txt_UserName.setText(entity.getUsername());
-            txt_UserPW.setText(entity.getPwd());
-            check_pwd.setChecked(true);
-        }
+                    txt_UserName.setText(entity.getUsername());
+                    txt_UserPW.setText(entity.getPwd());
+                    check_pwd.setChecked(true);
+                }
+
+                return null;
+            }
+
+        }.execute("");
+
     }
 
     /**
@@ -110,6 +125,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (buttonView.getId() == R.id.checkbox_pwd) {
                 if (isChecked) {
                     rememberPwdFlag = true;
+                }else {
+                    rememberPwdFlag = false;
                 }
             }
         }
@@ -218,6 +235,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * 连接HKU portal
+     * <p>
+     * 这边的异步任务，因为不是static 的，
+     * 可能会导致其生命周期比MainActivity还要长（比如Main 突然被kill掉了），
+     * 可能会存在内存泄漏（此处没大问题=不改了），
+     * 编码规范后续注意～
      *
      * @param userName
      * @param userPW
@@ -262,8 +284,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         entity.setPwd(userPW);
                         entity.setTime(System.currentTimeMillis());
                         dbManager.saveSession(entity);
-                    }else {
-
+                    } else {
+                        dbManager.clearSession();
                     }
 
                     //解析页面
