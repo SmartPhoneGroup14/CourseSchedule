@@ -13,7 +13,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
@@ -27,6 +31,8 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import cs.hku.group14.schedule.custom.DBManager;
+import cs.hku.group14.schedule.model.SessionEntity;
 import cs.hku.group14.schedule.util.ConnectUtil;
 import cs.hku.group14.schedule.view.BottomNavigationActivity;
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -37,12 +43,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private EditText txt_UserName, txt_UserPW;
     private Button btn_Login;
+    private CheckBox check_pwd;
 
+    private boolean rememberPwdFlag = false;
     private boolean queryFlag = false;
     private String classJson;
     private String examJson;
     private String username;
 
+    DBManager dbManager;
 
     /**
      * 随便赋值的一个唯一标识码
@@ -58,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         initView();
         queryCourseSchedule();
+        querySession();
         doTrustToCertificates();
         CookieHandler.setDefault(new CookieManager());
     }
@@ -66,10 +76,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_Login = (Button) findViewById(R.id.btn_Login);
         txt_UserName = (EditText) findViewById(R.id.txt_UserName);
         txt_UserPW = (EditText) findViewById(R.id.txt_UserPW);
+        check_pwd = findViewById(R.id.checkbox_pwd);
         // Register the Login button to click listener
         // Whenever the button is clicked, onClick is called
         btn_Login.setOnClickListener(this);
+        check_pwd.setOnCheckedChangeListener(listener);
+
+        dbManager = new DBManager(this);
     }
+
+    /**
+     * 查询Session
+     */
+    private void querySession() {
+        SessionEntity entity = dbManager.querySession();
+        if (entity == null) {
+            // 上一次登陆未选择记住密码
+            rememberPwdFlag = false;
+        } else {
+//            if ((System.currentTimeMillis() - entity.getTime()) > 5 * 24 * 3600 * 1000) {
+            txt_UserName.setText(entity.getUsername());
+            txt_UserPW.setText(entity.getPwd());
+            check_pwd.setChecked(true);
+        }
+    }
+
+    /**
+     * 记住密码checkbox
+     */
+    private CompoundButton.OnCheckedChangeListener listener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (buttonView.getId() == R.id.checkbox_pwd) {
+                if (isChecked) {
+                    rememberPwdFlag = true;
+                }
+            }
+        }
+    };
 
     @Override
     public void onClick(View v) {
@@ -123,6 +167,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .show();
     }
 
+    /**
+     * 解析HTML
+     */
     public void parse_HTML_Source_and_Switch_Activity(String HTMLsource) {
         //解析html文件，获取全部course课程
         Pattern p_coursename = Pattern.compile("<h3 class=\"coursename\".*?>.*?>(.*?)</a>");
@@ -169,6 +216,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(intent);
     }
 
+    /**
+     * 连接HKU portal
+     *
+     * @param userName
+     * @param userPW
+     */
     public void connect(final String userName, final String userPW) {
         final ProgressDialog pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
@@ -201,6 +254,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             protected void onPostExecute(String result) {
                 if (success) {
+                    // 登陆成功
+                    if (rememberPwdFlag == true) {
+                        SessionEntity entity = new SessionEntity();
+                        entity.setId("0");
+                        entity.setUsername(userName);
+                        entity.setPwd(userPW);
+                        entity.setTime(System.currentTimeMillis());
+                        dbManager.saveSession(entity);
+                    }else {
+
+                    }
+
                     //解析页面
                     parse_HTML_Source_and_Switch_Activity(moodlePageContent);
                 } else {
@@ -276,4 +341,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .show();
         }
     }
+
 }

@@ -1,5 +1,6 @@
 package cs.hku.group14.schedule.custom;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,6 +9,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import cs.hku.group14.schedule.model.NoteEntity;
+import cs.hku.group14.schedule.model.SessionEntity;
 
 public class DBManager {
     private static final String TAG = "DBManager";
@@ -30,7 +32,7 @@ public class DBManager {
         String sql = "insert into notes (username,title,body,date) values (?,?,?,?)";
         database.execSQL(sql, bindArgs);
 
-        Log.i(TAG,"insert note : " + noteEntity.getDate());
+        Log.i(TAG, "insert note : " + noteEntity.getDate());
 
         database.close();
     }
@@ -47,7 +49,7 @@ public class DBManager {
         String sql = "update notes set title=?,body=? where id=? and username=?";
         database.execSQL(sql, bindArgs);
 
-        Log.i(TAG,"update note : " + noteEntity.getId());
+        Log.i(TAG, "update note : " + noteEntity.getId());
 
         database.close();
     }
@@ -63,7 +65,7 @@ public class DBManager {
         String sql = "delete from notes where id=? and username=?";
         database.execSQL(sql, bindArgs);
 
-        Log.i(TAG,"delete note : " + noteEntity.getId());
+        Log.i(TAG, "delete note : " + noteEntity.getId());
 
         database.close();
     }
@@ -88,13 +90,75 @@ public class DBManager {
             tmp.setDate(cursor.getString(4));
             if (tmp != null && tmp.getDate() != null) {
                 result.add(tmp);
-            }else {
-                Log.i("DB","query note item is null, id : " + tmp.getId());
+            } else {
+                Log.i(TAG, "query note item is null, id : " + tmp.getId());
             }
         }
 
         cursor.close();
 
         return result;
+    }
+
+
+    /**
+     * 打开app时，查询session 记住密码内容
+     */
+    public SessionEntity querySession() {
+        DBHelper dbHelper = DBHelper.getInstance(mContext);
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+
+        String sql = "select * from session where id=0";
+        Cursor cursor = database.rawQuery(sql, new String[]{});
+
+        SessionEntity entity = new SessionEntity();
+        if (cursor.moveToFirst()) {
+            entity.setId(cursor.getString(0));
+            entity.setUsername(cursor.getString(1));
+            entity.setPwd(cursor.getString(2));
+            entity.setTime(cursor.getLong(3));
+
+        } else {
+            entity = null;
+        }
+
+        cursor.close();
+        return entity;
+    }
+
+    /**
+     * 上次登录时选择记住密码，登陆成功后，存储用户信息入session 表
+     */
+    public void saveSession(SessionEntity entity) {
+        DBHelper dbHelper = DBHelper.getInstance(mContext);
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        ContentValues initialValues = new ContentValues();
+        initialValues.put("id", 0);
+        initialValues.put("username", entity.getUsername());
+        initialValues.put("pwd", entity.getPwd());
+        initialValues.put("time", entity.getTime());
+
+        int id = (int) database.insertWithOnConflict("session", null, initialValues, SQLiteDatabase.CONFLICT_IGNORE);
+
+        if (id == -1) {
+            database.update("session", initialValues, "id=?", new String[]{"0"});
+        }
+
+        Log.i(TAG, "save session : " + entity.getUsername());
+
+        database.close();
+    }
+
+    /**
+     * 当上次登录时，未选择保存密码，清除Session
+     */
+    public void clearSession() {
+        DBHelper dbHelper = DBHelper.getInstance(mContext);
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        database.delete("session", "id=?", new String[]{"0"});
+
+        database.close();
     }
 }
