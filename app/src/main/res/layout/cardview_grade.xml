@@ -39,22 +39,15 @@
                         android:textSize="15dp"
                         android:textStyle="bold"
                         tools:text="COMP7506\nSmart phone apps development" />
-                    <ProgressBar
-                        android:layout_gravity="center_horizontal"
-                        android:id="@+id/progesss"
-                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                        android:layout_width="330dp"
-                        android:layout_height="wrap_content"
-                        android:indeterminateDrawable="@android:drawable/progress_indeterminate_horizontal"
-                        android:indeterminateOnly="false"
-                        android:max="100"
-                        android:maxHeight="50dp"
-                        android:minHeight="16dp"
-                        android:progress="20"/>
-                    <EditText
+                    <SeekBar
+                        android:id="@+id/card_seekbar"
+                        android:layout_width="350dp"
+                        android:layout_height="wrap_content" />
+                    <TextView
                         android:id="@+id/card_grade"
-                        android:inputType="number"
-                        android:hint="Please enter the grade"
+                        android:textColor="#140cb1"
+                        android:textSize="15dp"
+                        android:text="Drag the slider to enter the grade"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                 </android.support.v7.widget.LinearLayoutCompat>

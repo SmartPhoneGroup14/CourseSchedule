@@ -8,8 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.text.ParseException;
@@ -23,13 +25,11 @@ import cs.hku.group14.schedule.util.ClassPraseUtil;
 
 public class GPAFragment extends Fragment {
     private static final String TAG = "NotesFragment";
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.i(TAG, " onCreateView");
         View view = inflater.inflate(R.layout.fragment_calculator, container, false);
-
         initCardView(view);
 
         return view;
@@ -67,19 +67,45 @@ public class GPAFragment extends Fragment {
 
         // 解析exam 信息字符串
         List<ExamEntity> examEntities = ClassPraseUtil.parseExam(examJson);
-
         for (ExamEntity element : examEntities) {
             if (courseNames.contains(element.getCourse())) {
                 View cardView = layoutInflater.inflate(R.layout.cardview_grade, null);
-
                 TextView courseView = cardView.findViewById(R.id.card_course_grade);
-
+                final TextView grade = cardView.findViewById(R.id.card_grade);
                 courseView.setText(element.getCourse()+" "+element.getDescription());
+                SeekBar sb = cardView.findViewById(R.id.card_seekbar);
+                sb.setMax(100);
+                sb.setProgress(10);
+                sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        Double gpa = 1.0;
+                        if(progress>90)
+                            gpa=4.0;
+                        else if(progress<60)
+                            gpa=0.0;
+                        else {
+                            gpa = 1.0 + (progress - 60) * 0.1;
+                        }
+                        String str_gpa = String.format("%.2f", gpa);
+                        grade.setText("Score :"+progress+" / "+str_gpa);
+                }
 
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+
+                    }
+                });
                 addCardView(cardView, cardViewLayout);
             }
         }
     }
+
 
     private void addCardView(final View cardView, final LinearLayout layout) {
         getActivity().runOnUiThread(new Runnable() {
