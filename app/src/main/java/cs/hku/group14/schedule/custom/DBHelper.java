@@ -1,6 +1,7 @@
 package cs.hku.group14.schedule.custom;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -20,7 +21,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     private DBHelper(Context context) {
         //数据库名
-        super(context, "Notes.db", null, 4);
+        super(context, "Notes.db", null, 5);
         this.mContext = context;
     }
 
@@ -63,11 +64,18 @@ public class DBHelper extends SQLiteOpenHelper {
         // newVersion ： 新版本数据库
         Log.i("DBHelper", "onUpgrade oldVersion : " + oldVersion + ", newVersion : " + newVersion);
 
-        switch (newVersion) {
-            case 4:
-                db.execSQL("create table session(id integer primary key, username varchar(128), pwd varchar(128), time long)");
-                break;
-        }
+//        Cursor c = db.rawQuery("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='session'", null);
+//
+//        if (c.getInt(0)==0) {
+//            Log.i("DBHelper","session table is not exist");
+//            db.execSQL("create table session(id integer primary key, username varchar(128), pwd varchar(128), time long)");
+//        }
+//        c.close();
+//        switch (newVersion) {
+//            case 4:
+//                db.execSQL("create table session(id integer primary key, username varchar(128), pwd varchar(128), time long)");
+//                break;
+//        }
         // 使用 SQL的ALTER语句
 //        String sql = "alter table person add sex varchar(8)";
 //        db.execSQL(sql);

@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         initView();
 
-        querySession();
+//        querySession();
 
         //在线程里完成
         queryCourseSchedule();
@@ -92,29 +92,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 查询Session
      */
-    private void querySession() {
-
-        AsyncTask<String, Void, String> task = new AsyncTask<String, Void, String>() {
-
-            @Override
-            protected String doInBackground(String... strings) {
-                SessionEntity entity = dbManager.querySession();
-                if (entity == null) {
-                    // 上一次登陆未选择记住密码
-                    rememberPwdFlag = false;
-                } else {
-//            if ((System.currentTimeMillis() - entity.getTime()) > 5 * 24 * 3600 * 1000) {
-                    txt_UserName.setText(entity.getUsername());
-                    txt_UserPW.setText(entity.getPwd());
-                    check_pwd.setChecked(true);
-                }
-
-                return null;
-            }
-
-        }.execute("");
-
-    }
+//    private void querySession() {
+//
+//        AsyncTask<String, Void, String> task = new AsyncTask<String, Void, String>() {
+//
+//            @Override
+//            protected String doInBackground(String... strings) {
+//                SessionEntity entity = dbManager.querySession();
+//                if (entity == null) {
+//                    // 上一次登陆未选择记住密码
+//                    rememberPwdFlag = false;
+//                } else {
+////            if ((System.currentTimeMillis() - entity.getTime()) > 5 * 24 * 3600 * 1000) {
+//                    txt_UserName.setText(entity.getUsername());
+//                    txt_UserPW.setText(entity.getPwd());
+//                    check_pwd.setChecked(true);
+//                }
+//
+//                return null;
+//            }
+//
+//        }.execute("");
+//
+//    }
 
     /**
      * 记住密码checkbox
@@ -277,16 +277,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             protected void onPostExecute(String result) {
                 if (success) {
                     // 登陆成功
-                    if (rememberPwdFlag == true) {
-                        SessionEntity entity = new SessionEntity();
-                        entity.setId("0");
-                        entity.setUsername(userName);
-                        entity.setPwd(userPW);
-                        entity.setTime(System.currentTimeMillis());
-                        dbManager.saveSession(entity);
-                    } else {
-                        dbManager.clearSession();
-                    }
+//                    if (rememberPwdFlag == true) {
+//                        SessionEntity entity = new SessionEntity();
+//                        entity.setId("0");
+//                        entity.setUsername(userName);
+//                        entity.setPwd(userPW);
+//                        entity.setTime(System.currentTimeMillis());
+//                        dbManager.saveSession(entity);
+//                    } else {
+//                        dbManager.clearSession();
+//                    }
 
                     //解析页面
                     parse_HTML_Source_and_Switch_Activity(moodlePageContent);

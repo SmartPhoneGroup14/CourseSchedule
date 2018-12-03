@@ -103,7 +103,7 @@ public class DBManager {
 
     /**
      * 打开app时，查询session 记住密码内容
-     */
+    */
     public SessionEntity querySession() {
         DBHelper dbHelper = DBHelper.getInstance(mContext);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
