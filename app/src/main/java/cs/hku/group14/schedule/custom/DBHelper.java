@@ -20,7 +20,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     private DBHelper(Context context) {
         //数据库名
-        super(context, "Notes.db", null, 3);
+        super(context, "Notes.db", null, 4);
         this.mContext = context;
     }
 
@@ -64,7 +64,7 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.i("DBHelper", "onUpgrade oldVersion : " + oldVersion + ", newVersion : " + newVersion);
 
         switch (newVersion) {
-            case 3:
+            case 4:
                 db.execSQL("create table session(id integer primary key, username varchar(128), pwd varchar(128), time long)");
                 break;
         }

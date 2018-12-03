@@ -18,28 +18,7 @@
     \usepackage{pythonhighlight} % python
    % \usepackage{hyperref}
 
-    \usepackage{listings}
-    \usepackage{color}
-    \usepackage{xcolor}
-    \definecolor{dkgreen}{rgb}{0,0.6,0}
-    \definecolor{gray}{rgb}{0.5,0.5,0.5}
-    \definecolor{mauve}{rgb}{0.58,0,0.82}
-    \lstset{frame=tb,
-        language=Java,
-        aboveskip=3mm,
-        belowskip=3mm,
-        showstringspaces=false,
-        columns=flexible,
-        basicstyle = \ttfamily\small,
-        numbers=none,
-        numberstyle=\tiny\color{gray},
-        keywordstyle=\color{blue},
-        commentstyle=\color{dkgreen},
-        stringstyle=\color{mauve},
-        breaklines=true,
-        breakatwhitespace=true,
-        tabsize=3
-    }
+
 
 
     \usepackage[colorlinks=true]{hyperref} % the option is there to remove the square around links which is what I don't like.
@@ -53,7 +32,7 @@
                             % If you want the numbering of the subsection level just remove this line
     
     \title{\textsc{COMP7506 - CourseSchedule}}
-    \author{	Group - 14 \\
+    \author{	
                 3035562502 - ZHANG Kai \\
                 3035562100 - WANG Dezhao \\
                 3035562069 - YAN Qiangyu }
@@ -72,15 +51,69 @@
 
     \subsection{Category \& Function Synopsis}
     CourseSchedule is an eduactional Andriod application that aims to 
-    make students get their course schedule easier.
+    make HKU students get their course schedule easier.
     
     In this App, students can get their course schedule
     once they logged in with right portal account, 
     and it's the mian function of this App.
     With this App, users can view their course with different colors.
-    Meanwhile, this App also provides the function
+    Meanwhile, this App also provides the function of GPA calculator,
+    add the events to calendar, add notes, check the exam time, etc.
 
     \subsection{Market Analysis}
+    There are some similar eduactional App in the market, 
+    have different features and functions,
+    but most of them only provide the course schedule of \textbf{mainland universities}.
+    
+    HKU as an international university has thousands of students 
+    all over the world, and they all need to view the course information
+    whenever they go to school. 
+    Usually, students get the course information by visiting the HKU website.
+    For CS postgraduate programme students, they need to view 
+    the course information via CS intranet, which is more difficult for
+    the App that posted in the App store to get.
+    
+    Based on thess fact and considering the inconvenience of 
+    checking the course information of
+    CS postgraduate programme students in HKU, 
+    we designed this App, and we believe that
+    this App will have a considerable market.
+    With this App, students will be able to check their course schedule
+    more easier, and their only need to log in this App only once,
+    this is one of its conveniences.
+
+    Besides, this App provides the function of checking the exam timetable,
+    which transform the big exam timetable 
+    which shows all the exam that faculty holds into 
+    the specific exam timetable of usres themselves.
+    And along with the timetable, it also comments with the notes
+    given by the office, such as "bring the calculator", 
+    "bring A4 paper sheet".
+    Thus users do not need to check the informs one by one, 
+    this is another of its conveniences.
+
+    With these main features, students of CS postgraduate programme
+    may have a motivation to download this App, and with the download,
+    they will find this App have more useful functions like 
+    GPA calculator, calendar adding and making notes.
+    These functions will help users to schedule their time more easier
+    and have benifits on their study, which are attractive for students.
+
+    Even constrain this App's target users to 
+    the student of CS postgraduate programme, 
+    it will have a "big" market based on the consideration of
+    the time cost in its developing.
+    This App will have a considerable market because of 
+    its own useful functions and the fact 
+    that the market did not provides any similar Apps 
+    that can applied out of mainland.
+
+    Once we got more supports by other departments, 
+    this App may be popular in the whole school of HKU.
+
+
+
+
 
     \subsection{Similar Apps}
     \subsubsection{QSC}
@@ -88,8 +121,30 @@
         \includegraphics[width=6.9in]{QSC}
     \end{center}
     \begin{enumerate}[i)]
-        \item Overview
-        \item short-comings / possible improvements
+    \item Overview
+        
+    This App is developed by the students of QSC of Zhejiang University. 
+    Provide convenient enquiries for ZJUers 
+    such as calendar / course / grade / exam / school bus / event.
+
+    \item Main Features
+
+    - Show course schedule in days and weeks, with exam countdown.
+
+    - Users can add the calendar to this App.
+
+    - Review users' GPA.
+
+    - Check the useful website.
+
+    \item Short-Comings / Possible Improvements
+    
+    - All the course lookes similar.
+
+    - Other web information are just copy to the App.
+
+
+
     \end{enumerate}
     
 
@@ -103,19 +158,17 @@
         \includegraphics[width=6.5in]{SuperCurriculum}
     \end{center}
 
-    \section{Main functions}
+
+
+
+    \section{App Features}
 
     \begin{enumerate}[a)]
-    \item MainActivity.java
+    \item Succinct UI Desgin
     
-    The app starts with this activity and 
-    set content view to activity\_main.xml.
-
-    \begin{lstlisting}[ language=Java]
-private void initNavigationView():
-    \end{lstlisting}
-    Initialize the menu data in expandableListView and populate the expandable list. Set adapter, setOnGroupClickListener and setOnChildClickListener here.
-
+    \item Colorful View
+    
+    
     
     \end{enumerate}
     
