@@ -1,0 +1,44 @@
+音频配字：
+
+1. 10s
+Hello, we are group 14, and we made an App called Course Schedule. 
+It's a very useful App that aims to help students manage their time better.
+
+2. 5s
+First, we need to log in, use HKU UID and PIN.
+
+3. 4s
+And then we can see the courses shown in different colors.
+
+4. 3.7s
+Users can view different weeks through the button above.
+
+5. 3.9s
+You can also reset the current week to view the schedule.
+
+6.
+Click the button above allow the user to close the class schedule preview.
+
+7.
+Users can click on the course to get details, such as lecturer information, class location, etc.
+
+8.
+We also offer the function of long press to add reminders to the calendar.
+
+9.
+This is the built-in GPA calculator.
+
+10.
+Wish we all have good grades.
+
+11.
+The app also lists the user's exams, including the test location, exam time, and items that can be carried.
+
+12.
+In addition, the app also provides the function of adding text notes.
+
+13.
+For example, add a Hello HKU.
+
+14.
+The above is the main functions of this app. Hope you like it.
